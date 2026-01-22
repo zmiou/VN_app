@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>越南旅遊小幫手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d6efd">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="trip-title">越南峴港/會安之旅</div>
+            <div class="countdown-text" id="countdownText"></div>
+        </header>
+
+        <div id="content">
+            
+            <div id="homePage" class="page active">
+                <h1>🏠 旅程概覽</h1>
+                
+                <div class="card currency-converter">
+                    <h2>💰 即時匯率換算</h2>
+                    <div class="converter-box">
+                        <input type="number" id="twdInput" placeholder="輸入台幣 (TWD)" value="1000">
+                        <i class="fas fa-exchange-alt" style="color: var(--secondary-color);"></i>
+                        <input type="number" id="vndInput" placeholder="越南盾 (₫)" readonly>
+                    </div>
+                    <div class="exchange-rate" id="exchangeRate"></div>
+                    <div class="conversion-result" id="conversionResult"></div>
+                </div>
+
+                <div class="card weather-widget">
+                    <h2>🌤️ 峴港/會安天氣</h2>
+                    <div class="weather-grid">
+                        <div class="city-weather" id="danangWeather">
+                            <h3>峴港 (Da Nang)</h3>
+                            <div class="temp" id="danang-temp">--</div>
+                            <div class="condition" id="danang-condition">--</div>
+                        </div>
+                        <div class="city-weather" id="hoianWeather">
+                            <h3>會安 (Hoi An)</h3>
+                            <div class="temp" id="hoian-temp">--</div>
+                            <div class="condition" id="hoian-condition">--</div>
+                        </div>
+                    </div>
+                    <div class="weather-update-time data-source">
+                        最後更新時間：<span id="updateTime">--</span> (模擬數據)
+                    </div>
+                </div>
+
+                <div class="card visa-card">
+                    <h2>🛂 簽證資訊</h2>
+                    <p>台灣護照進入越南需辦理簽證 (觀光簽證，可辦電子簽)。</p>
+                    <div class="data-source">
+                        提醒：請務必再次向官方確認最新規定。
+                    </div>
+                </div>
+
+                <div class="card emergency-card">
+                    <h2>🚨 緊急聯絡</h2>
+                    <p>台灣駐越南代表處電話：<strong>+84-903-927-019</strong></p>
+                    <p>當地緊急電話：113 (警察), 115 (救護車)</p>
+                </div>
+            </div>
+
+            <div id="itineraryPage" class="page">
+                <h1>🗓️ 旅遊行程</h1>
+
+                <div class="itinerary-list">
+                    
+                    <div class="itinerary-day">
+                        <div class="day-header">
+                            <h3>Day 1 - 啟程：小港機場(KHH) → 峴港(DAD)</h3>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="day-content">
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_airport.jpg" alt="小港機場" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>抵達小港機場</h4>
+                                    <div class="details">
+                                        <span class="time-label">03:00 PM</span>
+                                        <span class="transport"><i class="fas fa-car"></i> 自駕</span>
+                                        <span class="transport"><i class="fas fa-taxi"></i> 計程車</span>
+                                    </div>
+                                    <p class="activity-text">午餐吃飽再出發。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_plane.jpg" alt="飛機" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>抵達峴港機場 (DAD)</h4>
+                                    <div class="details">
+                                        <span class="time-label">06:30 PM</span>
+                                        <span class="transport"><i class="fas fa-plane"></i> 飛機</span>
+                                    </div>
+                                    <p class="activity-text">1. 已預約飯店接駁車。 2. 先換 2000 台幣。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_hotel.jpg" alt="飯店" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>抵達會安飯店</h4>
+                                    <div class="details">
+                                        <span class="time-label">08:00 PM</span>
+                                        <span class="transport"><i class="fas fa-bus"></i> 接駁車</span>
+                                    </div>
+                                    <p class="activity-text">辦理 Check-in 手續。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="itinerary-day">
+                        <div class="day-header">
+                            <h3>Day 2 - 會安古城與印象秀</h3>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="day-content">
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_boat.jpg" alt="椰子船" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>椰子船體驗</h4>
+                                    <div class="details">
+                                        <span class="time-label">10:00 AM</span>
+                                        <span class="transport"><i class="fas fa-taxi"></i> 計程車</span>
+                                    </div>
+                                    <p class="activity-text">KLOOK預訂，體驗越南版水上芭蕾，準備好小費。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_food.jpg" alt="美食" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>Morning Glory Original 午餐</h4>
+                                    <div class="details">
+                                        <span class="time-label">12:00 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">美食清單：高樓麵、白玫瑰、炸雲吞、鴨腿咖哩、烤豬肉飯、法式布蕾。記得確認訂位！</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_hoian.jpg" alt="古鎮" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>會安古鎮漫遊</h4>
+                                    <div class="details">
+                                        <span class="time-label">01:30 PM</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">參考 Google Maps 儲存的地點，享受悠閒時光。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_dinner.jpg" alt="晚餐" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>會安印象主題公園 (晚餐)</h4>
+                                    <div class="details">
+                                        <span class="time-label">06:30 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">KLOOK預訂，在園區內解決晚餐。</p>
+                                </div>
+                            </div>
+                             <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_show.jpg" alt="印象秀" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>會安印象秀 (Hoi An Impression)</h4>
+                                    <div class="details">
+                                        <span class="time-label">07:30 PM</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">19:30 開始入場，建議提前搶位。記得選擇中文字幕入口！</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="itinerary-day">
+                        <div class="day-header">
+                            <h3>Day 3 - 峴港市區觀光與美食</h3>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="day-content">
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_luggage.jpg" alt="寄放行李" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>飯店寄放行李</h4>
+                                    <div class="details">
+                                        <span class="time-label">10:00 AM</span>
+                                        <span class="transport"><i class="fas fa-bus"></i> 接駁車</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">確認會安飯店是否提供前往峴港的接駁服務。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_vietfood.jpg" alt="越南美食" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>Ăn Thôi Restaurant 午餐</h4>
+                                    <div class="details">
+                                        <span class="time-label">11:00 AM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">美食清單：牛肉河粉、炒拌海鮮麵、越南春捲、鳳梨海鮮炒飯、檸檬草豬肉串、越南煎餅。確認是否需訂位！</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_market.jpg" alt="漢市場" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>漢市場 (Han Market)</h4>
+                                    <div class="details">
+                                        <span class="time-label">01:00 PM</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">體驗當地市集文化，可參考 Google Maps 儲存的地點。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_coffee_cong.jpg" alt="共咖啡" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>共咖啡 (Cong Ca Phe)</h4>
+                                    <div class="details">
+                                        <span class="time-label">02:30 PM</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">品嚐特色飲品：椰奶冰沙咖啡。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_church.jpg" alt="粉紅教堂" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>粉紅教堂 (峴港大教堂)</h4>
+                                    <div class="details">
+                                        <span class="time-label">03:00 PM</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">注意教堂的關閉時間。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_pagoda.jpg" alt="靈應寺" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>山茶半島靈應寺</h4>
+                                    <div class="details">
+                                        <span class="time-label">03:30 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">參觀巨大的觀音像，俯瞰峴港。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_marina_cafe.jpg" alt="Sơn Trà Marina" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>Sơn Trà Marina 咖啡廳</h4>
+                                    <div class="details">
+                                        <span class="time-label">04:30 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">享受碼頭景觀咖啡。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_sunset.jpg" alt="美溪沙灘" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>美溪沙灘 (My Khe Beach)</h4>
+                                    <div class="details">
+                                        <span class="time-label">05:00 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">在沙灘上欣賞日落。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_spa.jpg" alt="按摩" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>按摩放鬆</h4>
+                                    <div class="details">
+                                        <span class="time-label">06:00 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">地點待定，可考慮預約熱石按摩或腳底按摩。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_dinner_dng.jpg" alt="晚餐" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>晚餐</h4>
+                                    <div class="details">
+                                        <span class="time-label">07:00 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">選擇一家在地特色餐廳用餐。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="itinerary-day">
+                        <div class="day-header">
+                            <h3>Day 4 - 巴拿山 (Bana Hills) 全日</h3>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="day-content">
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_breakfast.jpg" alt="早餐" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>早餐</h4>
+                                    <div class="details">
+                                        <span class="time-label">08:00 AM</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">在飯店或市區簡單用餐。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_banahills.jpg" alt="巴拿山" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>巴拿山 (Bana Hills)</h4>
+                                    <div class="details">
+                                        <span class="time-label">09:30 AM</span>
+                                        <span class="transport"><i class="fas fa-bus"></i> 接駁車</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">確認飯店是否有巴拿山接駁服務，並規劃好路線（黃金橋、法國村等）。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_dinner_dng.jpg" alt="晚餐" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>晚餐</h4>
+                                    <div class="details">
+                                        <span class="time-label">06:00 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">返回市區，在 Google Maps 儲存的地點用餐。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_shopping.jpg" alt="採購" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>採購/購物</h4>
+                                    <div class="details">
+                                        <span class="time-label">07:00 PM</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">購買伴手禮或其他個人用品。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="itinerary-day">
+                        <div class="day-header">
+                            <h3>Day 5 - 五行山與賦歸</h3>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="day-content">
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_breakfast.jpg" alt="早餐" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>早餐</h4>
+                                    <div class="details">
+                                        <span class="time-label">09:00 AM</span>
+                                        <span class="transport"><i class="fas fa-shoe-prints"></i> 步行</span>
+                                    </div>
+                                    <p class="activity-text">在飯店或市區享用早餐。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_marble_mtn.jpg" alt="五行山" class="class-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>五行山靈應寺</h4>
+                                    <div class="details">
+                                        <span class="time-label">10:00 AM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">確認門票資訊，準備攀爬和參觀洞穴。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_lunch.jpg" alt="午餐" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>午餐</h4>
+                                    <div class="details">
+                                        <span class="time-label">12:30 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">午餐地點待定。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_con_market.jpg" alt="共市場" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>共市場 (Con Market)</h4>
+                                    <div class="details">
+                                        <span class="time-label">02:00 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">進行最後的市區購物，地點待定。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_packing.jpg" alt="整理行李" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>回飯店整理行李</h4>
+                                    <div class="details">
+                                        <span class="time-label">03:00 PM</span>
+                                        <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
+                                    </div>
+                                    <p class="activity-text">準備退房和前往機場。</p>
+                                </div>
+                            </div>
+                            <div class="activity-card">
+                                <div class="card-img-container">
+                                    <img src="placeholder_airport.jpg" alt="機場" class="card-img">
+                                </div>
+                                <div class="card-body">
+                                    <h4>抵達峴港機場 (DAD)</h4>
+                                    <div class="details">
+                                        <span class="time-label">04:00 PM</span>
+                                        <span class="transport"><i class="fas fa-bus"></i> 接駁車</span>
+                                    </div>
+                                    <p class="activity-text">詢問飯店是否提供機場接駁服務，辦理登機手續。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div id="budgetPage" class="page">
+                <h1>💸 記帳本</h1>
+                
+                <div class="card dashboard-card">
+                    <h2>📊 儀表板</h2>
+                    <div class="dashboard-grid">
+                        <div class="summary-item total-twd">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <div class="label">總花費 (TWD 參考)</div>
+                            <span id="totalTWD">0.00</span> 
+                        </div>
+                        <div class="summary-item public-fund-balance">
+                            <i class="fas fa-coins"></i>
+                            <div class="label">公費餘額 (₫)</div>
+                            <span id="publicFundBalance">0</span> 
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card exchange-form-card">
+                    <h2>💱 公費換匯</h2>
+                    <form id="addExchangeForm">
+                        <div class="form-group">
+                            <label for="exchangeDate">日期</label>
+                            <input type="date" id="exchangeDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exchangeLocation">地點/備註</label>
+                            <input type="text" id="exchangeLocation" placeholder="例如：峴港機場、銀行" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rmbAmount">人民幣金額 (RMB)</label>
+                            <input type="number" id="rmbAmount" placeholder="輸入人民幣金額" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="vndAmount">越南盾金額 (VND)</label>
+                            <input type="number" id="vndAmount" placeholder="輸入越南盾金額 (₫)" required min="1">
+                        </div>
+                        <div class="form-group exchange-rate-display">
+                            <label>換算匯率 (1 RMB ≈ ? ₫)</label>
+                            <span id="calculatedRate" class="rate-value">--</span>
+                        </div>
+                        <button type="submit" id="addExchangeBtn">確認換匯並新增公費</button>
+                    </form>
+                    
+                    <h3 style="margin-top: 20px; color: var(--subtle-text-color);">換匯紀錄</h3>
+                    <ul id="exchangeList" class="exchange-list">
+                        </ul>
+                </div>
+                
+                <div class="card chart-card">
+                    <h2>📊 支出類別分佈</h2>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card budget-form-card">
+                    <h2>新增支出</h2>
+                    <form id="addExpenseForm">
+                        <div class="form-group">
+                            <label for="expenseCategory">類別</label>
+                            <select id="expenseCategory" required>
+                                <option value="餐飲">餐飲</option>
+                                <option value="交通">交通</option>
+                                <option value="住宿">住宿</option>
+                                <option value="購物">購物</option>
+                                <option value="娛樂">娛樂</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expenseDate">日期</label>
+                            <input type="date" id="expenseDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expenseDescription">說明</label>
+                            <input type="text" id="expenseDescription" placeholder="例如：Grab計程車到機場" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expensePayer">付款人</label>
+                            <select id="expensePayer" required>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="公費">公費</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>分攤人 (公費)</label>
+                            <div class="share-options">
+                                <label><input type="checkbox" name="shareWith" value="A" checked> A</label>
+                                <label><input type="checkbox" name="shareWith" value="B" checked> B</label>
+                            </div>
+                            <small style="color: var(--subtle-text-color); display: block; margin-top: 5px;">*只有當「付款人」是「公費」時，分攤人才會生效。</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expenseAmount">金額與幣別</label>
+                            <div class="currency-input">
+                                <input type="number" id="expenseAmount" placeholder="金額" required min="1">
+                                <select id="expenseCurrency">
+                                    <option value="TWD">TWD (台幣)</option>
+                                    <option value="VND">VND (越南盾)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" id="addExpenseBtn">新增支出</button>
+                    </form>
+                </div>
+
+                <div class="card expense-list-card">
+                    <h2>支出詳情</h2>
+                    <table id="expenseTable">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>類別</th>
+                                <th>說明</th>
+                                <th>付款人</th> 
+                                <th>金額 (₫/TWD)</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="packingPage" class="page">
+                <h1>📦 行李清單</h1>
+
+                <div class="card packing-form-card">
+                    <h2>新增打包項目</h2>
+                    <form id="addItemForm">
+                        <input type="text" id="packingItemInput" placeholder="例如：耳塞、轉換插頭" required>
+                        <button type="submit" id="addItemBtn">加入</button>
+                    </form>
+                </div>
+
+                <div class="card packing-list-card">
+                    <h2>待打包 (未勾選)</h2>
+                    <ul class="packing-list" id="pendingList">
+                        </ul>
+                    
+                    <h2>已打包 (已勾選)</h2>
+                    <ul class="packing-list" id="checkedList">
+                        </ul>
+                    <p id="packingEmptyMessage" style="text-align: center; color: var(--subtle-text-color); display: none;">清單為空</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="navbar">
+            <button class="nav-btn active" data-page="homePage">
+                <i class="fas fa-home"></i>
+                <span>首頁</span>
+            </button>
+            <button class="nav-btn" data-page="itineraryPage">
+                <i class="fas fa-route"></i>
+                <span>行程</span>
+            </button>
+            <button class="nav-btn" data-page="budgetPage">
+                <i class="fas fa-wallet"></i>
+                <span>記帳</span>
+            </button>
+            <button class="nav-btn" data-page="packingPage">
+                <i class="fas fa-box"></i>
+                <span>行李</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+<script>
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,774 @@
+/* ==================================================
+版本：V2.6 (基於 V2.0 行程/首頁 + V2.5 記帳功能)
+日期：2025/12/17
+內容：
+1. 記帳頁面新增儀表板，顯示總花費和公費餘額。
+2. 記帳頁面新增公費換匯區塊。
+3. 記帳頁面新增支出類別圓餅圖 (使用 Chart.js)。
+==================================================
+*/
+
+/* --- 顏色與字體變數 --- */
+:root {
+    --primary-color: #023047; /* 主色：深海藍 (用於 Header, 導航欄活躍) */
+    --secondary-color: #219EBC; /* 輔色：藍綠色 (用於標題, 行程標題) */
+    --accent-color: #FFB703; /* 強調色：琥珀黃 (用於數字、換算結果) */
+    --light-blue: #8ECAE6; /* 輔助淺色：淺天空藍 */
+    
+    --background-color: #F8F8F8; /* 背景色：極淺灰 */
+    --text-color: #333;
+    --subtle-text-color: #666;
+    --border-color: #e0e0e0;
+    --success-color: #4caf50;
+    --danger-color: #f44336;
+    --font-family: 'Noto Sans TC', sans-serif;
+}
+
+/* --- 全局樣式 --- */
+* {
+    box-sizing: border-box;
+    font-family: var(--font-family);
+}
+
+body {
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6; 
+}
+
+/* --- App 容器 (模擬手機畫面) --- */
+#app {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    min-height: 100vh;
+    padding-bottom: 70px; /* 給底部導航欄留出空間 */
+    position: relative;
+}
+
+/* --- 頂部標題與倒數計時 (固定 Header) --- */
+header {
+    background-color: var(--primary-color); /* 深海藍 */
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    position: fixed; /* 固定在頂部 */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 600px;
+    width: 100%;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.trip-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.countdown-text {
+    font-size: 0.9em;
+    color: var(--accent-color); /* 琥珀黃強調 */
+}
+
+/* --- 主要內容區域與頁面切換 --- */
+#content {
+    padding: 15px;
+}
+
+.page {
+    display: none;
+    padding-top: 90px; /* 修正遮擋問題：確保內容從固定標題下方開始 */
+}
+
+.page.active {
+    display: block;
+}
+
+h1 {
+    font-size: 1.6em;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.3em;
+    color: var(--secondary-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+/* 核心卡片樣式 */
+.card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 15px;
+    margin-bottom: 20px;
+    border-top: 4px solid var(--primary-color); /* 深海藍邊條 */
+}
+
+/* --- 底部導航欄 (略，無改動) --- */
+#navbar {
+    position: fixed; /* 固定在底部 */
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 5px 0;
+    z-index: 200;
+    height: 60px;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: var(--subtle-text-color);
+    font-size: 1em;
+    padding: 10px 5px;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s;
+}
+
+.nav-btn.active {
+    color: var(--primary-color); /* 深海藍 */
+    font-weight: bold;
+}
+
+/* --- 首頁資訊卡片 (略，無改動) --- */
+.flight-info-card strong, .hotel-info-card strong, .emergency-card strong {
+    color: var(--secondary-color); /* 藍綠色 */
+    font-weight: 700;
+}
+
+.flight-info-card p, .hotel-info-card p, .emergency-card p {
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+/* 簽證卡片樣式 */
+.visa-card .visa-thumbnail-container {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.visa-card .visa-thumbnail {
+    max-width: 90%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.visa-card .data-source {
+    margin-top: 10px;
+    font-size: 0.8em;
+    color: var(--subtle-text-color);
+}
+
+/* --- 匯率換算器樣式 (略，無改動) --- */
+.converter-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.currency-converter input[type="number"] {
+    width: 90%;
+    padding: 10px 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.exchange-rate {
+    font-size: 0.9em;
+    color: var(--subtle-text-color);
+    margin: 5px 0;
+}
+
+.conversion-result {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--accent-color); /* 琥珀黃 */
+    margin-top: 10px;
+}
+
+
+/* --- 天氣資訊樣式 (略，無改動) --- */
+.weather-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    text-align: center;
+}
+
+.city-weather {
+    background-color: var(--background-color);
+    padding: 15px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.city-weather h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+
+.city-weather .temp {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--secondary-color); /* 藍綠色 */
+}
+
+.city-weather .condition {
+    font-size: 0.9em;
+    color: var(--subtle-text-color);
+}
+
+.weather-widget .data-source {
+    margin-top: 15px;
+    font-size: 0.8em;
+    color: var(--subtle-text-color);
+    text-align: center;
+}
+
+/* --- 行程頁面樣式 (略，無改動) --- */
+.itinerary-day {
+    margin-bottom: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.day-header {
+    background-color: var(--secondary-color); /* 藍綠色 */
+    color: white;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+}
+
+.day-header.active {
+    background-color: var(--primary-color); /* 深海藍 */
+}
+
+.day-header h3 {
+    margin: 0;
+}
+
+.day-header .icon {
+    transition: transform 0.3s;
+}
+
+.day-header.active .icon {
+    transform: rotate(180deg);
+}
+
+.day-content {
+    display: none;
+    padding: 10px;
+    background-color: white;
+}
+
+/* 活動卡片 */
+.activity-card {
+    display: flex;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* 圖片容器 */
+.card-img-container {
+    width: 35%;
+    flex-shrink: 0;
+    overflow: hidden;
+    background-color: var(--light-blue); /* 淺天空藍作為底色 */
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    padding: 5px; 
+}
+
+.card-img {
+    width: 100%;
+    height: auto; 
+    object-fit: cover;
+    display: block;
+    border-radius: 4px;
+}
+
+/* 文字內容區 */
+.card-body {
+    padding: 8px 10px; 
+    width: 65%;
+    line-height: 1.4; 
+}
+
+.card-body h4 {
+    margin: 0 0 3px 0; 
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+
+.card-body .details {
+    display: flex;
+    gap: 6px; 
+    margin-bottom: 4px; 
+    flex-wrap: wrap;
+}
+
+/* 行程卡片標籤樣式 */
+.transport, .time-label {
+    background-color: var(--accent-color); /* 琥珀黃 */
+    color: white;
+    padding: 2px 6px; 
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.activity-text {
+    margin: 3px 0 0 0; 
+    font-size: 0.9em;
+    color: var(--subtle-text-color);
+    line-height: 1.5; 
+}
+
+/* --- 記帳頁面 V2.6 樣式 --- */
+
+/* V2.6: 儀表板網格 */
+.dashboard-card {
+    padding-top: 10px; 
+    text-align: center;
+    border-top: 4px solid var(--secondary-color); /* 區分於一般卡片 */
+}
+
+.dashboard-card h2 {
+    text-align: left;
+    color: var(--primary-color);
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.dashboard-grid .summary-item {
+    background-color: var(--background-color);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.dashboard-grid .summary-item i {
+    font-size: 1.5em;
+    color: var(--secondary-color);
+    margin-bottom: 5px;
+}
+
+.dashboard-grid .label {
+    font-size: 0.85em;
+    color: var(--subtle-text-color);
+}
+
+/* 總花費樣式 */
+.summary-item.total-twd span {
+    font-weight: bold;
+    font-size: 1.3em;
+    color: var(--primary-color);
+}
+
+/* 公費餘額樣式 */
+.summary-item.public-fund-balance span {
+    font-weight: bold;
+    font-size: 1.3em;
+    /* 顏色在 JS 中控制 (綠色/紅色) */
+}
+
+
+/* V2.6: 換匯表單樣式 */
+.exchange-form-card h2 {
+    color: var(--success-color); /* 綠色，代表收入 */
+}
+
+.exchange-rate-display {
+    text-align: center;
+    padding: 10px 0;
+    background-color: var(--background-color);
+    border-radius: 5px;
+}
+
+.exchange-rate-display label {
+    margin-bottom: 0;
+    font-size: 0.9em;
+}
+
+.exchange-rate-display .rate-value {
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-top: 5px;
+}
+
+#addExchangeBtn {
+    background-color: var(--success-color); /* 綠色 */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.1em;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+#addExchangeBtn:hover {
+    background-color: #388e3c;
+}
+
+/* 換匯紀錄列表 */
+.exchange-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.exchange-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-color);
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.exchange-list li:last-child {
+    border-bottom: none;
+}
+
+.delete-exchange-btn {
+    background: none;
+    border: 1px solid var(--danger-color);
+    color: var(--danger-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
+
+
+/* V2.6: 圓餅圖樣式 */
+.chart-card h2 {
+    color: var(--secondary-color);
+}
+
+.chart-container {
+    width: 100%;
+    max-height: 350px; /* 限制圖表最大高度，避免過高 */
+    margin: 0 auto;
+}
+
+/* --- 記帳表單樣式 (略，無改動) --- */
+.budget-form-card .form-group {
+    margin-bottom: 15px;
+}
+
+.budget-form-card label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--subtle-text-color);
+}
+
+/* 針對所有輸入框和選擇框的通用樣式 */
+.budget-form-card input[type="text"],
+.budget-form-card input[type="number"],
+.budget-form-card select,
+.budget-form-card input[type="date"],
+.exchange-form-card input[type="text"],
+.exchange-form-card input[type="number"],
+.exchange-form-card input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: white;
+    color: var(--text-color);
+    transition: border-color 0.3s;
+    /* 確保日期輸入框樣式一致 */
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* 聚焦時的樣式 */
+.budget-form-card input:focus,
+.budget-form-card select:focus,
+.exchange-form-card input:focus {
+    outline: none;
+    border-color: var(--primary-color); /* 聚焦時使用主色 */
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+
+.currency-input {
+    display: flex;
+    gap: 10px;
+}
+
+.currency-input input {
+    flex-grow: 1;
+}
+
+.currency-input select {
+    width: auto;
+}
+
+#addExpenseBtn {
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.1em;
+    transition: background-color 0.3s;
+}
+
+#addExpenseBtn:hover {
+    background-color: #388e3c;
+}
+
+
+/* 支出列表 (略，無改動) */
+.expense-list-card {
+    overflow-x: auto;
+}
+
+#expenseTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+}
+
+#expenseTable th, #expenseTable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+#expenseTable th {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.delete-btn {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* V2.5 NEW: 公費分攤選項樣式 (略，無改動) */
+.share-options {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.share-options label {
+    display: flex;
+    align-items: center;
+    font-weight: normal; /* 保持輕量 */
+    color: var(--text-color);
+    margin-bottom: 0; /* 覆蓋 form-group 的 margin-bottom 影響 */
+}
+
+.share-options input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+    accent-color: var(--secondary-color); /* 使用輔色標記勾選 */
+}
+
+/* --- 行李清單樣式 (略，無改動) --- */
+.packing-list-card h2 {
+    color: var(--subtle-text-color);
+    font-size: 1.2em;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+}
+
+.packing-list {
+    list-style: none;
+    padding: 0;
+}
+
+.packing-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.packing-list li:last-child {
+    border-bottom: none;
+}
+
+.item-name {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.item-name input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
+.checked-item .item-text {
+    text-decoration: line-through;
+    color: var(--subtle-text-color);
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+}
+
+/* 打包表單 */
+.packing-form-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.packing-form-card form {
+    display: flex;
+    gap: 10px;
+}
+
+#packingItemInput {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+#addItemBtn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+}
+
+#addItemBtn:hover {
+    background-color: #004d40; /* 使用更深的 primary-color 變化 */
+}
+
+/* 記帳看板樣式 */
+.budget-summary {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    text-align: center;
+}
+
+.summary-item .label { font-size: 0.8em; opacity: 0.9; display: block; }
+.summary-item .value { font-size: 1.4em; font-weight: bold; color: var(--accent-color); }
+.summary-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.3); }
+
+/* 功能按鈕 Grid */
+.budget-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.action-btn {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.action-btn:active { transform: scale(0.95); }
+.action-btn i { font-size: 1.5em; color: var(--secondary-color); }
+.action-btn span { font-size: 0.9em; font-weight: bold; color: var(--text-color); }
+
+/* 明細列表優化 */
+.expense-list { list-style: none; padding: 0; }
+.expense-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
