@@ -8,20 +8,141 @@
 ==================================================
 */
 
-/* --- 顏色與字體變數 --- */
+/* --- 1. 莫蘭迪配色與全局優化 --- */
 :root {
-    --primary-color: #023047; /* 主色：深海藍 (用於 Header, 導航欄活躍) */
-    --secondary-color: #219EBC; /* 輔色：藍綠色 (用於標題, 行程標題) */
-    --accent-color: #FFB703; /* 強調色：琥珀黃 (用於數字、換算結果) */
-    --light-blue: #8ECAE6; /* 輔助淺色：淺天空藍 */
-    
-    --background-color: #F8F8F8; /* 背景色：極淺灰 */
-    --text-color: #333;
-    --subtle-text-color: #666;
-    --border-color: #e0e0e0;
-    --success-color: #4caf50;
-    --danger-color: #f44336;
-    --font-family: 'Noto Sans TC', sans-serif;
+    --primary-color: #6B7AA1;    /* 灰藍色 */
+    --secondary-color: #949398;  /* 煙燻灰 */
+    --accent-color: #C6A49A;     /* 裸粉色 */
+    --background-color: #F5F5F5;
+    --text-color: #4A4A4A;
+    --subtle-text-color: #8E8E8E;
+    --border-color: #E2E2E2;
+    --card-bg: #FFFFFF;
+}
+
+/* --- 2. 手風琴流暢動畫 --- */
+.day-content {
+    display: block !important; /* 強制開啟 block 才能跑動畫 */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    padding: 0 15px;
+}
+
+.day-header.active + .day-content {
+    max-height: 2000px; /* 足夠大的高度讓內容展現 */
+    padding: 15px;
+}
+
+/* --- 3. 手機字體優化 (減輕粗細) --- */
+.day-header h3 {
+    font-size: 1.1rem;
+    font-weight: 500; /* 不要太粗，看起來比較俐落 */
+}
+
+/* --- 4. 彈窗 (Modal) 基礎樣式 --- */
+/* 彈窗背景 - 加入毛玻璃效果 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px); /* 背景模糊 */
+    transition: opacity 0.3s ease;
+}
+
+/* 彈窗內容盒 */
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 10% auto; /* 距離頂部一點 */
+    padding: 24px;
+    border-radius: 20px; /* 圓角加大更有質感 */
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+    animation: modalSlideUp 0.4s ease-out; /* 彈出動畫 */
+}
+
+/* 彈出動畫 */
+@keyframes modalSlideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* 彈窗標題 */
+.modal-content h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 關閉按鈕美化 */
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    color: var(--subtle-text-color);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.close-modal:hover { color: var(--danger-color); }
+
+/* 表單優化 */
+.modal-content .form-group {
+    margin-bottom: 15px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.modal-content input, 
+.modal-content select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: #fcfcfc;
+    font-size: 1rem;
+}
+
+/* 彈窗內部的提交按鈕 */
+.modal-content .submit-btn {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* --- 5. 明細清單 (取代表格) --- */
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 5px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 /* --- 全局樣式 --- */
@@ -771,4 +892,120 @@ h2 {
     justify-content: space-between;
     padding: 12px 0;
     border-bottom: 1px solid var(--border-color);
+}
+
+/* 彈窗背景 */
+.modal {
+    display: none;      /* 預設隱藏 */
+    position: fixed;    /* 固定位置 */
+    z-index: 1000;      /* 確保在最上層 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* 半透明黑背景 */
+}
+
+/* 彈窗白盒子 */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.close-btn {
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* 表單內的按鈕 */
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* 確保所有彈窗內的元件不會超出寬度 */
+.modal-content * {
+    box-sizing: border-box;
+}
+
+/* 讓金額與幣別在同一行時的排列優化 */
+.form-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.form-row .form-group:nth-child(1) {
+    flex: 2; /* 金額佔比較寬 */
+}
+
+.form-row .form-group:nth-child(2) {
+    flex: 1; /* 幣別佔比較窄 */
+}
+
+/* 確保手機端輸入框不會縮小 */
+.modal-content input, 
+.modal-content select {
+    width: 100%;
+    min-height: 44px; /* 增加點擊面積，手機更好按 */
+    font-size: 16px;  /* 防止 iOS 自動放大頁面 */
+    padding: 8px 12px;
+}
+
+/* 讓明細容器不強制不換行 */
+#expenseList {
+    width: 100%;
+    overflow-x: hidden; /* 徹底解決左右滑動問題 */
+}
+
+/* 卡片式明細樣式 */
+.expense-card {
+    background: white;
+    border-radius: 12px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-left: 5px solid var(--primary-color); /* 左側色條增加質感 */
+}
+
+.expense-info {
+    flex: 1; /* 佔據左側剩餘空間 */
+    padding-right: 10px;
+}
+
+.expense-info strong {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.expense-info small {
+    color: var(--subtle-text-color);
+    font-size: 0.8rem;
+}
+
+.expense-amount {
+    text-align: right;
+    white-space: nowrap; /* 金額不要換行 */
 }

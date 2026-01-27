@@ -366,6 +366,9 @@ document.addEventListener('DOMContentLoaded', () => {
             renderExchangeList();
             calculateTotal();
             
+// 🚀 關鍵：儲存後清空並關閉
+        addExchangeForm.reset();
+        toggleModal('exchangeModal', false); // 確保 ID 是正確的;
             // 清空表單
             document.getElementById('exchangeLocation').value = '';
             document.getElementById('rmbAmount').value = '';
@@ -547,11 +550,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 shareWith, // V2.5 NEW: 儲存分攤人 (公費時有效)
                 timestamp: new Date().toISOString()
             };
+const payerSelect = document.getElementById('expensePayer');
+const shareSection = document.getElementById('shareWithSection');
+
+if (payerSelect && shareSection) {
+    payerSelect.addEventListener('change', () => {
+        // 如果選中「公費」，顯示分擔區塊，否則隱藏
+        shareSection.style.display = (payerSelect.value === '公費') ? 'block' : 'none';
+    });
+}
 
             expenseItems.push(newItem);
             saveExpenses();
             // 在新增後重新渲染清單
             renderExpenseList();
+// 🚀 新增這行：儲存後自動關閉抽屜
+        toggleModal('expenseModal', false);
             
             // 為了方便連續輸入，只重設 description 和 amount
             document.getElementById('expenseDescription').value = '';
@@ -662,4 +676,71 @@ document.addEventListener('DOMContentLoaded', () => {
     // V2.6 啟動時先執行一次總花費計算，避免 dashboard 數據為空
     calculateTotal(); 
     switchPage('homePage'); 
+
 });
+
+// 打開或關閉彈窗的功能
+function toggleModal(id, show) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.style.display = show ? 'block' : 'none';
+    } else {
+        console.error("找不到 ID 為 " + id + " 的彈窗！");
+    }
+}
+
+// 修正消費明細渲染 (改成清單式而非表格)
+function renderExpenseList() {
+    const listContainer = document.getElementById('expenseList');
+    if (!listContainer) return;
+
+    // 先根據日期排序
+    expenseItems.sort((a, b) => new Date(b.expenseDate) - new Date(a.expenseDate));
+
+    listContainer.innerHTML = expenseItems.map((item, index) => {
+        const isTWD = item.currency === 'TWD';
+        const displayVND = isTWD ? item.amount * EXCHANGE_RATE : item.amount;
+        const displayTWD = isTWD ? item.amount : item.amount / EXCHANGE_RATE;
+
+        return `
+            <div class="list-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div>
+                    <div style="font-weight: bold; color: var(--primary-color);">${item.category} - ${item.description}</div>
+                    <div style="font-size: 0.8rem; color: var(--subtle-text-color);">${item.expenseDate} · 付款人: ${item.payer}</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: bold; color: var(--secondary-color);">${Math.round(displayVND).toLocaleString()} ₫</div>
+                    <div style="font-size: 0.75rem; color: var(--accent-color);">≈ ${Math.round(displayTWD).toLocaleString()} TWD</div>
+                    <button class="delete-btn" data-index="${index}" style="background: none; border: none; color: var(--danger-color); cursor: pointer; font-size: 0.8rem; padding-top: 5px;">[刪除]</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // 重新綁定刪除事件
+    listContainer.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const idx = e.target.dataset.index;
+            expenseItems.splice(idx, 1);
+            saveExpenses();
+            renderExpenseList();
+            calculateTotal();
+            if (typeof renderPieChart === 'function') renderPieChart();
+        });
+    });
+}
+
+// 原有的 toggleModal
+function toggleModal(id, show) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.style.display = show ? 'block' : 'none';
+    }
+}
+
+// 🚀 新增：點擊彈窗外部背景自動關閉
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = "none";
+    }
+}

@@ -487,140 +487,142 @@
                     </div>
                 </div>
             </div> 
-            <div id="budgetPage" class="page">
-                <h1>💸 記帳本</h1>
-                
-                <div class="card dashboard-card">
-                    <h2>📊 儀表板</h2>
-                    <div class="dashboard-grid">
-                        <div class="summary-item total-twd">
-                            <i class="fas fa-hand-holding-usd"></i>
-                            <div class="label">總花費 (TWD 參考)</div>
-                            <span id="totalTWD">0.00</span> 
-                        </div>
-                        <div class="summary-item public-fund-balance">
-                            <i class="fas fa-coins"></i>
-                            <div class="label">公費餘額 (₫)</div>
-                            <span id="publicFundBalance">0</span> 
-                        </div>
-                    </div>
-                </div>
+<div id="budgetPage" class="page">
+    <h1>💸 記帳本</h1>
 
-
-                <div class="card exchange-form-card">
-                    <h2>💱 公費換匯</h2>
-                    <form id="addExchangeForm">
-                        <div class="form-group">
-                            <label for="exchangeDate">日期</label>
-                            <input type="date" id="exchangeDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="exchangeLocation">地點/備註</label>
-                            <input type="text" id="exchangeLocation" placeholder="例如：峴港機場、銀行" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="rmbAmount">人民幣金額 (RMB)</label>
-                            <input type="number" id="rmbAmount" placeholder="輸入人民幣金額" required min="1">
-                        </div>
-                        <div class="form-group">
-                            <label for="vndAmount">越南盾金額 (VND)</label>
-                            <input type="number" id="vndAmount" placeholder="輸入越南盾金額 (₫)" required min="1">
-                        </div>
-                        <div class="form-group exchange-rate-display">
-                            <label>換算匯率 (1 RMB ≈ ? ₫)</label>
-                            <span id="calculatedRate" class="rate-value">--</span>
-                        </div>
-                        <button type="submit" id="addExchangeBtn">確認換匯並新增公費</button>
-                    </form>
-                    
-                    <h3 style="margin-top: 20px; color: var(--subtle-text-color);">換匯紀錄</h3>
-                    <ul id="exchangeList" class="exchange-list">
-                        </ul>
-                </div>
-                
-                <div class="card chart-card">
-                    <h2>📊 支出類別分佈</h2>
-                    <div class="chart-container">
-                        <canvas id="categoryChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="card budget-form-card">
-                    <h2>新增支出</h2>
-                    <form id="addExpenseForm">
-                        <div class="form-group">
-                            <label for="expenseCategory">類別</label>
-                            <select id="expenseCategory" required>
-                                <option value="餐飲">餐飲</option>
-                                <option value="交通">交通</option>
-                                <option value="住宿">住宿</option>
-                                <option value="購物">購物</option>
-                                <option value="娛樂">娛樂</option>
-                                <option value="其他">其他</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="expenseDate">日期</label>
-                            <input type="date" id="expenseDate" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="expenseDescription">說明</label>
-                            <input type="text" id="expenseDescription" placeholder="例如：Grab計程車到機場" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="expensePayer">付款人</label>
-                            <select id="expensePayer" required>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="公費">公費</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>分攤人 (公費)</label>
-                            <div class="share-options">
-                                <label><input type="checkbox" name="shareWith" value="A" checked> A</label>
-                                <label><input type="checkbox" name="shareWith" value="B" checked> B</label>
-                            </div>
-                            <small style="color: var(--subtle-text-color); display: block; margin-top: 5px;">*只有當「付款人」是「公費」時，分攤人才會生效。</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="expenseAmount">金額與幣別</label>
-                            <div class="currency-input">
-                                <input type="number" id="expenseAmount" placeholder="金額" required min="1">
-                                <select id="expenseCurrency">
-                                    <option value="TWD">TWD (台幣)</option>
-                                    <option value="VND">VND (越南盾)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" id="addExpenseBtn">新增支出</button>
-                    </form>
-                </div>
-
-                <div class="card expense-list-card">
-                    <h2>支出詳情</h2>
-                    <table id="expenseTable">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>類別</th>
-                                <th>說明</th>
-                                <th>付款人</th> 
-                                <th>金額 (₫/TWD)</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            </tbody>
-                    </table>
-                </div>
+    <div class="card dashboard-card">
+        <h2>📊 儀表板</h2>
+        <div class="dashboard-grid">
+            <div class="summary-item total-twd">
+                <i class="fas fa-hand-holding-usd"></i>
+                <div class="label">總花費 (TWD 參考)</div>
+                <span id="totalTWD">0.00</span>
             </div>
+            <div class="summary-item public-fund-balance">
+                <i class="fas fa-coins"></i>
+                <div class="label">公費餘額 (₫)</div>
+                <span id="publicFundBalance">0</span>
+            </div>
+        </div>
+    </div>
 
+    <div class="budget-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+        <button class="action-btn" onclick="toggleModal('expenseModal', true)">➕ 記一筆</button>
+        <button class="action-btn" onclick="toggleModal('historyModal', true)">📋 消費明細</button>
+        <button class="action-btn" onclick="toggleModal('exchangeModal', true)">💱 公費換匯</button>
+        <button class="action-btn" onclick="toggleModal('exHistoryModal', true)">🕒 換匯紀錄</button>
+    </div>
+
+    <div class="card chart-card">
+        <h2>📊 支出類別分佈</h2>
+        <div class="chart-container">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+
+    <div id="expenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增支出</h3>
+                <span class="close-btn" onclick="toggleModal('expenseModal', false)">❌</span>
+            </div>
+            <form id="addExpenseForm">
+                <div class="form-group">
+                    <label>類別</label>
+                    <select id="expenseCategory" required>
+                        <option value="餐飲">餐飲</option><option value="交通">交通</option>
+                        <option value="住宿">住宿</option><option value="購物">購物</option>
+                        <option value="娛樂">娛樂</option><option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>日期</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label>說明</label>
+                    <input type="text" id="expenseDescription" placeholder="例如：Grab計程車" required>
+                </div>
+                <div class="form-group">
+                    <label>付款人</label>
+                    <select id="expensePayer" required>
+                        <option value="A">A</option><option value="B">B</option><option value="公費">公費</option>
+                    </select>
+                </div>
+                <div class="form-group">
+<div id="shareWithSection" style="display: none; margin-top: 10px;">
+                    <label>分攤人 (公費)</label>
+                    <div class="share-options">
+                        <label><input type="checkbox" name="shareWith" value="A" checked> A</label>
+                        <label><input type="checkbox" name="shareWith" value="B" checked> B</label>
+                    </div></div>
+                </div>
+                <div class="form-group">
+                    <label>金額與幣別</label>
+                    <div class="currency-input" style="display: flex; gap: 5px;">
+                        <input type="number" id="expenseAmount" placeholder="金額" required style="flex: 2;">
+                        <select id="expenseCurrency" style="flex: 1;">
+                            <option value="TWD">TWD</option><option value="VND">VND</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">儲存支出</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>消費明細</h3>
+                <span class="close-btn" onclick="toggleModal('historyModal', false)">❌</span>
+            </div>
+            <div class="table-container" style="overflow-x: auto;">
+                <table id="expenseTable">
+                    <thead>
+                        <tr><th>日期</th><th>說明</th><th>金額</th><th>操作</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="exchangeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💱 公費換匯</h3>
+                <span class="close-btn" onclick="toggleModal('exchangeModal', false)">❌</span>
+            </div>
+            <form id="addExchangeForm">
+                <div class="form-group">
+                    <label>日期</label>
+                    <input type="date" id="exchangeDateModal" required>
+                </div>
+                <div class="form-group">
+                    <label>人民幣金額 (RMB)</label>
+                    <input type="number" id="rmbAmount" placeholder="RMB" required>
+                </div>
+                <div class="form-group">
+                    <label>越南盾金額 (VND)</label>
+                    <input type="number" id="vndAmount" placeholder="VND" required>
+                </div>
+                <button type="submit" class="submit-btn">儲存換匯</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="exHistoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🕒 換匯紀錄</h3>
+                <span class="close-btn" onclick="toggleModal('exHistoryModal', false)">❌</span>
+            </div>
+            <ul id="exchangeList" class="exchange-list"></ul>
+        </div>
+    </div>
+
+</div>
             <div id="packingPage" class="page">
                 <h1>📦 行李清單</h1>
 
