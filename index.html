@@ -23,18 +23,25 @@
             <div id="homePage" class="page active">
                 <h1>🏠 旅程概覽</h1>
                 
-                <div class="card currency-converter">
-                    <h2>💰 即時匯率換算</h2>
-                    <div class="converter-box">
-                        <input type="number" id="twdInput" placeholder="輸入台幣 (TWD)" value="1000">
-                        <i class="fas fa-exchange-alt" style="color: var(--secondary-color);"></i>
-                        <input type="number" id="vndInput" placeholder="越南盾 (₫)" readonly>
-                    </div>
-                    <div class="exchange-rate" id="exchangeRate"></div>
-                    <div class="conversion-result" id="conversionResult"></div>
-                </div>
-
-                <div class="card weather-widget">
+<div class="card currency-converter">
+    <h2>💰 即時匯率換算</h2>
+    <div class="converter-box">
+        <div class="input-group">
+            <input type="number" id="twdInput" placeholder="台幣 TWD" step="any">
+            <span>TWD</span>
+        </div>
+        <div class="swap-icon"><i class="fas fa-exchange-alt"></i></div>
+        <div class="input-group">
+            <input type="number" id="vndInput" placeholder="越盾 VND" step="any">
+            <span>VND</span>
+        </div>
+    </div>
+    <div id="converterRateText" style="font-size: 0.7rem; color: var(--subtle-text-color); margin-top: 10px; text-align: center;">
+        使用平均匯率：計算中...
+    </div>
+</div>
+      
+          <div class="card weather-widget">
                     <h2>🌤️ 峴港/會安天氣</h2>
                     <div class="weather-grid">
                         <div class="city-weather" id="danangWeather">
@@ -81,7 +88,7 @@
                         <div class="day-content">
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_airport.jpg" alt="小港機場" class="card-img">
+                                    <img src="https://imgcdn.cna.com.tw/www/WebPhotos/800/20241212/1155x768_wmky_0_C20241212000227.jpg" alt="小港機場" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>抵達小港機場</h4>
@@ -95,7 +102,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_plane.jpg" alt="飛機" class="card-img">
+                                    <img src="https://thumbs.dreamstime.com/b/da-nang-international-airport-dad-vietnam-danang-located-central-third-largest-79130986.jpg" alt="飛機" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>抵達峴港機場 (DAD)</h4>
@@ -108,7 +115,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_hotel.jpg" alt="飯店" class="card-img">
+                                    <img src="https://pix10.agoda.net/hotelImages/2176605/-1/ae730cf8bea302c930798c814f5d01ab.jpg?ce=0&s=414x232" alt="飯店" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>抵達會安飯店</h4>
@@ -130,7 +137,7 @@
                         <div class="day-content">
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_boat.jpg" alt="椰子船" class="card-img">
+                                    <img src="https://d122axpxm39woi.cloudfront.net/images/destinations/origin/5f05333f54ffe.jpg" alt="椰子船" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>椰子船體驗</h4>
@@ -138,12 +145,12 @@
                                         <span class="time-label">10:00 AM</span>
                                         <span class="transport"><i class="fas fa-taxi"></i> 計程車</span>
                                     </div>
-                                    <p class="activity-text">KLOOK預訂，體驗越南版水上芭蕾，準備好小費。</p>
+                                    <p class="activity-text">KKDAY預訂，體驗越南版水上芭蕾，準備好小費。</p>
                                 </div>
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_food.jpg" alt="美食" class="card-img">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKyyzpRRTBsVZFj0PussdsnlILMu6odHHE-g&s" alt="美食" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>Morning Glory Original 午餐</h4>
@@ -156,7 +163,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_hoian.jpg" alt="古鎮" class="card-img">
+                                    <img src="https://image.kkday.com/v2/image/get/c_fit%2Cq_55%2Ct_webp%2Cw_960/s1.kkday.com/product_27184/20190621072113_h5RVG/jpg" alt="古鎮" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>會安古鎮漫遊</h4>
@@ -169,7 +176,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_dinner.jpg" alt="晚餐" class="card-img">
+                                    <img src="https://pengu777.com/wp-content/uploads/2020/02/1581155663-2418765134.jpg" alt="晚餐" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>會安印象主題公園 (晚餐)</h4>
@@ -177,12 +184,12 @@
                                         <span class="time-label">06:30 PM</span>
                                         <span class="transport"><i class="fas fa-motorcycle"></i> Grab</span>
                                     </div>
-                                    <p class="activity-text">KLOOK預訂，在園區內解決晚餐。</p>
+                                    <p class="activity-text">KKDAY預訂，在園區內解決晚餐。</p>
                                 </div>
                             </div>
                              <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_show.jpg" alt="印象秀" class="card-img">
+                                    <img src="https://photo.settour.com.tw/900x600/https%3A%2F%2Fwww.settour.com.tw%2Fss_img%2FGFG%2F0000%2F0199%2F18%2Fori_56402342.jpg" alt="印象秀" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>會安印象秀 (Hoi An Impression)</h4>
@@ -204,7 +211,7 @@
                         <div class="day-content">
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_luggage.jpg" alt="寄放行李" class="card-img">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuzqgqJ3N8EAVbBMwoaRsiXcsfNI1kmTWBJQ&s" alt="寄放行李" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>飯店寄放行李</h4>
@@ -218,7 +225,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_vietfood.jpg" alt="越南美食" class="card-img">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJpTzqNw4U8de7Txje4YdFHv0b46yPI5r51w&s" alt="越南美食" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>Ăn Thôi Restaurant 午餐</h4>
@@ -232,7 +239,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_market.jpg" alt="漢市場" class="card-img">
+                                    <img src="https://danangfantasticity.com/wp-content/uploads/2023/10/cho-han-da-nang-119-tran-phu-hai-chau-nhung-khu-cho-noi-tieng-tai-da-nang-khong-the-bo-qua-09.jpg" alt="漢市場" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>漢市場 (Han Market)</h4>
@@ -245,7 +252,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_coffee_cong.jpg" alt="共咖啡" class="card-img">
+                                    <img src="https://www.cotrang.org/tin-tuc/images/quan-cafe/da-nang/cong-cafe/cong-cafe-da-nang-ttgt-19.jpg" alt="共咖啡" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>共咖啡 (Cong Ca Phe)</h4>
@@ -258,7 +265,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_church.jpg" alt="粉紅教堂" class="card-img">
+                                    <img src="https://image.cdn-eztravel.com.tw/jItx3emJdJVzK4-4zb-w5ElV7i6HqsXTjAsmBsauGsk/g:ce/aHR0cDovL3ZhY2F0aW9uLmNkbi1lenRyYXZlbC5jb20udHcvaW1nL1ZEUi9WSV8xMzE3OTQ5NzkwLmpwZw.jpg" alt="粉紅教堂" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>粉紅教堂 (峴港大教堂)</h4>
@@ -271,7 +278,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_pagoda.jpg" alt="靈應寺" class="card-img">
+                                    <img src="https://img.ltn.com.tw/Upload/art/page/800/2014/01/21/150.jpg" alt="靈應寺" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>山茶半島靈應寺</h4>
@@ -284,7 +291,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_marina_cafe.jpg" alt="Sơn Trà Marina" class="card-img">
+                                    <img src="https://goodmorning-hoian.com/wp-content/uploads/son-tra-marina-danang-instagram.jpg" alt="Sơn Trà Marina" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>Sơn Trà Marina 咖啡廳</h4>
@@ -297,7 +304,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_sunset.jpg" alt="美溪沙灘" class="card-img">
+                                    <img src="https://lilystravelagency.tw/wp-content/uploads/2025/10/image10-3.jpg" alt="美溪沙灘" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>美溪沙灘 (My Khe Beach)</h4>
@@ -358,7 +365,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_banahills.jpg" alt="巴拿山" class="card-img">
+                                    <img src="https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/09/29/a3/8c.jpg" alt="巴拿山" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>巴拿山 (Bana Hills)</h4>
@@ -420,7 +427,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_marble_mtn.jpg" alt="五行山" class="class-img">
+                                    <img src="placeholder_lunch.jpg" alt="五行山" class="class-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>五行山靈應寺</h4>
@@ -446,7 +453,7 @@
                             </div>
                             <div class="activity-card">
                                 <div class="card-img-container">
-                                    <img src="placeholder_con_market.jpg" alt="共市場" class="card-img">
+                                    <img src="https://starworldtour.com/wp-content/uploads/2024/07/cho-con-4.jpg" alt="共市場" class="card-img">
                                 </div>
                                 <div class="card-body">
                                     <h4>共市場 (Con Market)</h4>
