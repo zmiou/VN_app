@@ -55,37 +55,69 @@
 
 /* --- 4. 彈窗 (Modal) 基礎樣式 --- */
 /* 彈窗背景 - 加入毛玻璃效果 */
+/* 統一後的彈窗，保留毛玻璃與手機優化 */
 .modal {
     display: none;
     position: fixed;
     z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px); /* 背景模糊 */
-    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px); /* 保留這個高級感 */
 }
 
-/* 彈窗內容盒 */
+/* 確保輸入框在手機上好按 (16px 防止縮放) */
+.modal-content input, 
+.modal-content select {
+    width: 100%;
+    min-height: 44px; 
+    font-size: 16px; 
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+
+/* 讓彈窗主體在電腦版也能正常顯示並擁有捲軸 */
 .modal-content {
-    background-color: var(--card-bg);
-    margin: 2% auto; /* 距離頂部一點 */
-    padding: 20px;
-    border-radius: 20px; /* 圓角加大更有質感 */
-    width: 90%;
-    max-width: 500px;
-    max-height: 85vh; /* 限制最大高度為螢幕的 85% */
-    overflow-y: auto; /* 超出時顯示捲軸 */
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    position: relative;
-    animation: modalSlideUp 0.4s ease-out; /* 彈出動畫 */
+    background-color: var(--card-bg) !important;
+    margin: 5vh auto !important; /* 降低邊距，給內容更多空間 */
+    padding: 40px 25px 25px 25px !important; /* 頂部留空間給叉叉 */
+    border-radius: 20px !important; /* 四角圓角 */
+    width: 90% !important;
+    max-width: 450px !important;
+    position: relative !important;
+    
+    /* 捲軸關鍵設定 */
+    max-height: 85vh !important; /* 限制高度在螢幕 85% 以內 */
+    overflow-y: auto !important;  /* 內容超出時顯示捲軸 */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
 }
 
-.close-btn {
-    cursor: pointer;
-    font-size: 1.2rem;
+/* 強制將關閉按鈕移至右側並美化 */
+.close-modal {
+    position: absolute !important;
+    top: 15px !important;
+    right: 20px !important; /* 強制固定在右側 */
+    left: auto !important;  /* 取消可能存在的左側定位 */
+    
+    width: 32px !important;
+    height: 32px !important;
+    background-color: #f0f0f0 !important;
+    color: var(--secondary-color) !important; /* 配色改為灰藍 */
+    border-radius: 50% !important;
+    
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    z-index: 1001 !important;
+}
+
+.close-modal:hover {
+    background-color: var(--danger-color) !important;
+    color: white !important;
 }
 
 /* 彈出動畫 */
@@ -106,18 +138,6 @@
     align-items: center;
     gap: 10px;
 }
-
-/* 關閉按鈕美化 */
-.close-modal {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    font-size: 24px;
-    color: var(--subtle-text-color);
-    cursor: pointer;
-    transition: color 0.3s;
-}
-.close-modal:hover { color: var(--danger-color); }
 
 /* 表單優化 */
 .modal-content .form-group {
@@ -736,38 +756,16 @@ h2 {
     overflow-x: auto;
 }
 
-#expenseTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95em;
-}
-
-#expenseTable th, #expenseTable td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-    white-space: nowrap;
-}
-
-#expenseTable th {
-    background-color: var(--background-color);
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
+/* 統一後的刪除按鈕 (保留質感) */
 .delete-btn {
-    background-color: var(--danger-color);
-    color: white;
+    background: #FFEDED;
+    color: #FF5252;
     border: none;
     padding: 5px 10px;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 0.8rem;
     cursor: pointer;
-    font-size: 0.8em;
-    transition: background-color 0.3s;
-}
-
-.delete-btn:hover {
-    background-color: #d32f2f;
+    transition: 0.3s;
 }
 
 /* V2.5 NEW: 公費分攤選項樣式 (略，無改動) */
@@ -894,30 +892,33 @@ h2 {
 .summary-item .value { font-size: 1.4em; font-weight: bold; color: var(--accent-color); }
 .summary-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.3); }
 
-/* 功能按鈕 Grid */
+/* 記帳頁四顆按鈕的排版 */
 .budget-actions {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-bottom: 20px;
+    margin: 20px 0;
 }
 
 .action-btn {
     background: white;
+    color: var(--text-color);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
     padding: 15px;
+    border-radius: 15px;
+    font-size: 0.9rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: transform 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.action-btn:active { transform: scale(0.95); }
-.action-btn i { font-size: 1.5em; color: var(--secondary-color); }
-.action-btn span { font-size: 0.9em; font-weight: bold; color: var(--text-color); }
+.action-btn:active {
+    transform: scale(0.95);
+    background-color: #f8f8f8;
+}
 
 /* 明細列表優化 */
 .expense-list { list-style: none; padding: 0; }
@@ -928,27 +929,9 @@ h2 {
     border-bottom: 1px solid var(--border-color);
 }
 
-/* 彈窗背景 */
-.modal {
-    display: none;      /* 預設隱藏 */
-    position: fixed;    /* 固定位置 */
-    z-index: 1000;      /* 確保在最上層 */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5); /* 半透明黑背景 */
-}
-
-/* 表單內的按鈕 */
-.submit-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    margin-top: 10px;
+#historyModal .modal-content {
+    max-height: 80vh; /* 最高佔螢幕 80% */
+    overflow-y: auto;  /* 超過就捲動 */
 }
 
 /* 確保所有彈窗內的元件不會超出寬度 */
@@ -1018,4 +1001,232 @@ h2 {
 .expense-amount {
     text-align: right;
     white-space: nowrap; /* 金額不要換行 */
+}
+
+/* 地圖連結小圖示樣式 */
+.map-link {
+    color: var(--secondary-color); /* 使用你設定的煙燻灰 */
+    margin-left: 8px;
+    font-size: 0.85em;
+    text-decoration: none;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.map-link:hover {
+    transform: scale(1.2); /* 鼠標移上去會稍微放大 */
+    color: var(--primary-color); /* 移上去變深藍色 */
+}
+
+/* 修正標題與圖示對齊 */
+.card-body h4 {
+    display: flex;
+    align-items: center;
+    margin: 0 0 5px 0;
+}
+
+/* 確保 Grab 標籤內的圖示有足夠間距 */
+.transport i {
+    margin-right: 4px;
+}
+
+/* 強制修正彈窗圓角與捲軸 */
+.modal-content {
+    border-radius: 20px !important; /* 1. 四角圓角 */
+    padding: 40px 25px 25px 25px !important;
+    position: relative !important;
+    
+    /* 解決電腦版內容超出問題 */
+    max-height: 85vh !important; /* 限制高度 */
+    overflow-y: auto !important;  /* 啟動捲軸 */
+    margin: 5vh auto !important;
+}
+
+/* 強制修正關閉按鈕位置與配色 */
+.close-modal {
+    position: absolute !important;
+    top: 15px !important;
+    right: 20px !important; /* 2. 右上角 */
+    left: auto !important;
+    
+    width: 32px !important;
+    height: 32px !important;
+    background-color: #f2f2f2 !important; /* 淺灰底 */
+    color: #6B7AA1 !important; /* 符合網頁灰藍配色 */
+    
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    font-size: 24px !important;
+    cursor: pointer !important;
+    z-index: 9999 !important;
+}
+
+.close-modal:hover {
+    background-color: #D68E8E !important; /* 莫蘭迪紅 */
+    color: white !important;
+}
+
+```css
+/* --- 隱藏捲軸但保有滾動功能 --- */
+.modal-content {
+    /* 針對 Chrome, Safari 和 Opera 隱藏捲軸 */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+    
+    /* 確保圓角與位置正確 */
+    border-radius: 20px !important;
+    padding: 40px 25px 25px 25px !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+}
+
+#expenseModal .modal-content::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera 隱藏捲軸 */
+}
+
+/* 1. 先把原本 h3 的 margin-top 拿掉，確保它在頂部 */
+.modal-content h3 {
+    margin-top: 0 !important;
+    padding-top: 5px !important; /* 給頂部一點點呼吸空間 */
+    position: relative !important; /* 讓 h2 變成按鈕的定位基準 */
+    line-height: 1.2 !important;
+    display: block !important;
+}
+
+/* 2. 讓叉叉絕對定位在 h2 的右側垂直中間 */
+.close-modal {
+    position: absolute !important;
+    right: 0 !important;
+    /* 關鍵：讓按鈕的中間對準文字的中間 */
+    top: 50% !important;
+    transform: translateY(-50%) !important; 
+    
+    width: 32px !important;
+    height: 32px !important;
+    background-color: #f2f2f2 !important;
+    color: #6B7AA1 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px !important;
+    cursor: pointer !important;
+}
+
+/* --- 1. 日期格式樣式優化 --- */
+#expenseTable td:first-child {
+    color: var(--subtle-text-color);
+    font-weight: 500;
+    width: 60px; /* 縮小日期寬度 */
+}
+
+/* --- 7. 明細列表與表格 (標題置中優化版) --- */
+#expenseTable { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0 4px; 
+    table-layout: fixed; 
+}
+
+/* 標題欄位：全部設為置中，除了日期 */
+#expenseTable th {
+    font-size: 0.75rem;
+    color: var(--subtle-text-color);
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: center; /* 關鍵：標題預設置中 */
+}
+
+/* 內容欄位：預設置中 */
+#expenseTable td { 
+    background: #fdfdfd; 
+    padding: 12px 2px; 
+    font-size: 0.9rem; 
+    vertical-align: middle;
+    text-align: center; /* 關鍵：內容預設置中 */
+}
+
+/* 個別欄位微調 */
+.col-date { width: 50px; text-align: left !important; padding-left: 8px !important; } /* 日期維持靠左 */
+.col-desc { width: auto; } /* 說明標題與內容皆置中 */
+.col-amount { width: 110px; text-align: right !important; padding-right: 15px !important; } /* 金額數字靠右比較好閱讀 */
+.col-action { width: 45px; text-align: center !important; }
+
+/* 強制金額標題也置中 (覆蓋掉上面 col-amount 的靠右) */
+#expenseTable th.col-amount {
+    text-align: center !important;
+    padding-right: 0 !important;
+}
+
+/* 公費標籤：確保在金額下方也置中 */
+.public-expense-tag {
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 4px;
+    font-weight: normal;
+    /* 如果想讓標籤在右側金額下方對齊，可以取消下一行 */
+    margin-right: 15px; 
+}
+
+.delete-btn {
+    background: #FFEBEB; /* 淺紅底 */
+    color: var(--danger-color); 
+    border: none;
+    width: 24px; height: 24px;
+    border-radius: 50%; 
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* --- 8. 換匯紀錄表格樣式 (比照支出明細) --- */
+#exchangeTable { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0 4px; 
+    table-layout: fixed; 
+}
+
+#exchangeTable th {
+    font-size: 0.75rem;
+    color: var(--subtle-text-color);
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+#exchangeTable td { 
+    background: #f9f9f9; /* 稍微深一點點的底色與支出區隔 */
+    padding: 12px 2px; 
+    font-size: 0.85rem; 
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* 換匯各欄位寬度與對齊 */
+.ex-date { width: 50px; text-align: left !important; padding-left: 8px !important; color: var(--subtle-text-color); font-size: 0.8rem; }
+.ex-process { width: auto; font-weight: 500; }
+.ex-remain { width: 100px; text-align: right !important; padding-right: 15px !important; font-weight: bold; }
+.ex-action { width: 45px; text-align: center !important; }
+
+/* 箭頭樣式 */
+.exchange-arrow {
+    color: var(--primary-color);
+    margin: 0 4px;
+    font-size: 0.8rem;
+}
+
+/* 剩餘金額標籤 */
+.remain-label {
+    display: block;
+    font-size: 9px;
+    color: var(--subtle-text-color);
+    font-weight: normal;
+    margin-top: 2px;
 }

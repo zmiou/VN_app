@@ -43,9 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
         expenseItems.forEach(item => {
             const v = item.currency === 'TWD' ? item.amount * currentExchangeRate : item.amount;
             totalVNDExpense += v;
-            if (item.payer === '公費') publicFundExpense += v;
-        });
-
+// 修改這裡：只要 payer 是 '公費' 或 'A+B' 都算進公費餘額
+    if (item.payer === '公費' || item.payer === 'A+B') {
+        publicFundExpense += v;
+    }
+});
         const publicFundBalance = publicFundIncome - publicFundExpense;
 
         // 更新首頁與儀表板介面
@@ -194,64 +196,230 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // ------------------------------------
-    // 7. 記帳與換匯邏輯 (保留你的表單邏輯)
-    // ------------------------------------
-    function renderExchangeList() {
-        const list = document.getElementById('exchangeList');
-        if (!list) return;
-        exchangeHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
-        list.innerHTML = exchangeHistory.map((record, index) => `
-            <li>${record.date} | ${record.location} | 
-                <span style="color:green">+${Math.round(record.vndAmount).toLocaleString()} ₫</span>
-                <button onclick="deleteExchange(${index})">x</button>
-            </li>`).join('');
+// ------------------------------------
+// 7. 記帳與換匯邏輯 (完整修復與補齊版)
+// ------------------------------------
+
+// 統一刷新畫面所有數字與清單的函式
+function refreshAll() {
+    updateAverageRate();  // 1. 重新計算匯率
+    calculateTotal();     // 2. 重新計算總額與餘額
+    renderExchangeList(); // 3. 刷新換匯紀錄 (之前漏掉這個函式內容)
+    renderExpenseList();  // 4. 刷新支出明細
+}
+
+// [修正] 補上漏掉的換匯紀錄渲染函式
+function renderExchangeList() {
+    const listElement = document.getElementById('exchangeList');
+    if (!listElement) return;
+
+    listElement.innerHTML = `
+        <table id="exchangeTable">
+            <thead>
+                <tr>
+                    <th class="ex-date">日期</th>
+                    <th class="ex-process">換匯過程</th>
+                    <th class="ex-action">操作</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    `;
+
+    const tbody = listElement.querySelector('tbody');
+    // 確保讀取的是全域變數 exchangeHistory
+    const records = exchangeHistory || [];
+
+    if (records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">尚無換匯紀錄</td></tr>';
+        return;
     }
 
-    window.deleteExchange = (index) => {
+    tbody.innerHTML = records.map((rec, index) => {
+        // 1. 日期格式化：3/21
+        let dateShow = '';
+        if (rec.date) {
+            const dateParts = rec.date.split('-');
+            dateShow = dateParts.length === 3 ? `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}` : rec.date;
+        }
+
+        // 2. 計算該筆紀錄的匯率 (VND / TWD)
+        const rate = (rec.vndAmount / rec.rmbAmount).toFixed(0);
+
+        return `
+            <tr>
+                <td class="ex-date">${dateShow}</td>
+                <td class="ex-process">
+                    <div>
+                        ${rec.rmbAmount.toLocaleString()} RMB
+                        <span class="exchange-arrow">➔</span>
+                        ${rec.vndAmount.toLocaleString()} VND
+                    </div>
+                    <span class="remain-label" style="color: var(--primary-color);">
+                        匯率：1 RMB ≈ ${parseInt(rate).toLocaleString()} VND
+                    </span>
+                </td>
+                <td class="ex-action">
+                    <button class="delete-btn" onclick="deleteExchange(${index})">×</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// [修正] 支出明細渲染：確保讀取變數並處理標籤
+function renderExpenseList() {
+    const tbody = document.querySelector('#expenseTable tbody');
+    const thead = document.querySelector('#expenseTable thead');
+    if (!tbody) return;
+
+    // 加上標題列的 class (如果 HTML 原本沒有)
+    if (thead) {
+        thead.innerHTML = `
+            <tr>
+                <th class="col-date">日期</th>
+                <th class="col-desc">說明</th>
+                <th class="col-amount">金額</th>
+                <th class="col-action">操作</th>
+            </tr>
+        `;
+    }
+    
+    const items = expenseItems || [];
+    if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">尚無支出紀錄</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = items.map((item, index) => {
+        let dateShow = '';
+        if (item.expenseDate) {
+            const dateParts = item.expenseDate.split('-');
+            dateShow = dateParts.length === 3 ? `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}` : '';
+        }
+
+        const isPublic = item.payer === '公費' || item.payer === 'A+B';
+        const publicTag = isPublic ? `<br><span class="public-expense-tag">公費</span>` : '';
+        const amountColor = isPublic ? 'color: var(--primary-color);' : '';
+
+        return `
+            <tr>
+                <td class="col-date" style="color: var(--subtle-text-color); font-size: 0.8rem;">${dateShow}</td>
+                <td class="col-desc"><span class="desc-text">${item.description}</span></td>
+                <td class="col-amount" style="font-weight: bold; ${amountColor}">
+                    ${Math.round(item.amount).toLocaleString()} ${item.currency}
+                    ${publicTag} 
+                </td>
+                <td class="col-action">
+                    <button class="delete-btn" onclick="deleteExpense(${index})">×</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+// 刪除功能 (掛在 window 確保 HTML 呼叫得到)
+window.deleteExchange = (index) => {
+    if(confirm('確定要刪除這筆換匯嗎？')) {
         exchangeHistory.splice(index, 1);
         localStorage.setItem('exchangeHistory', JSON.stringify(exchangeHistory));
-        calculateTotal();
-        renderExchangeList();
-    };
-
-    // 表單處理 (支出)
-    const expForm = document.getElementById('addExpenseForm');
-    if (expForm) {
-        expForm.onsubmit = (e) => {
-            e.preventDefault();
-            const newItem = {
-                category: document.getElementById('expenseCategory').value,
-                expenseDate: document.getElementById('expenseDate').value,
-                description: document.getElementById('expenseDescription').value,
-                amount: parseFloat(document.getElementById('expenseAmount').value),
-                currency: document.getElementById('expenseCurrency').value,
-                payer: document.getElementById('expensePayer').value
-            };
-            expenseItems.push(newItem);
-            localStorage.setItem('expenseItems', JSON.stringify(expenseItems));
-            toggleModal('expenseModal', false);
-            calculateTotal();
-            renderExpenseList();
-        };
+        refreshAll();
     }
+};
+
+window.deleteExpense = (index) => {
+    if(confirm('確定要刪除這筆支出嗎？')) {
+        expenseItems.splice(index, 1);
+        localStorage.setItem('expenseItems', JSON.stringify(expenseItems));
+        refreshAll();
+    }
+};
+
+// 支出表單處理
+const expForm = document.getElementById('addExpenseForm');
+if (expForm) {
+    expForm.onsubmit = (e) => {
+        e.preventDefault();
+        const newItem = {
+            category: document.getElementById('expenseCategory').value,
+            expenseDate: document.getElementById('expenseDate').value,
+            description: document.getElementById('expenseDescription').value,
+            amount: parseFloat(document.getElementById('expenseAmount').value),
+            currency: document.getElementById('expenseCurrency').value,
+            payer: document.getElementById('expensePayer').value
+        };
+        
+        expenseItems.push(newItem);
+        localStorage.setItem('expenseItems', JSON.stringify(expenseItems));
+        
+        toggleModal('expenseModal', false);
+        expForm.reset();
+        refreshAll(); 
+    };
+}
+
+// 換匯表單處理 (修正變數名與 ID)
+const exchangeForm = document.getElementById('addExchangeForm');
+if (exchangeForm) {
+    exchangeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // 取得彈窗內的輸入值
+        const date = document.getElementById('exchangeDateModal').value;
+        const twd = parseFloat(document.getElementById('rmbAmount').value);
+        const vnd = parseFloat(document.getElementById('vndAmount').value);
+
+        if (!twd || !vnd) { alert("請輸入金額"); return; }
+
+        // 推入正確的全域變數 exchangeHistory
+        exchangeHistory.push({ 
+            date: date, 
+            rmbAmount: twd, 
+            vndAmount: vnd 
+        });
+        
+        // 儲存至 LocalStorage
+        localStorage.setItem('exchangeHistory', JSON.stringify(exchangeHistory));
+        
+        toggleModal('exchangeModal', false);
+        exchangeForm.reset();
+        
+        // 立即刷新所有介面 (包含換匯明細)
+        refreshAll(); 
+    });
+}
 
     // ------------------------------------
     // 8. 啟動
     // ------------------------------------
-    calculateTotal();
+    refreshAll(); // 取代原本散亂的 render 呼叫
     renderPackingList();
     initializeWeather();
     setInterval(updateCountdown, 1000);
     switchPage('homePage');
 });
 
-// ------------------------------------
-// 工具函式 (放在最外面)
-// ------------------------------------
+// 工具函式
+// 修改原本的 toggleModal 函式
 function toggleModal(id, show) {
     const modal = document.getElementById(id);
-    if (modal) modal.style.display = show ? 'block' : 'none';
+    if (!modal) return;
+    
+    modal.style.display = show ? 'block' : 'none';
+
+    // 5. 如果是打開新增支出彈窗，預設日期為當天
+    if (show && id === 'expenseModal') {
+        const dateInput = document.getElementById('expenseDate');
+        if (dateInput && !dateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+    }
+}
+
+// 3. 點選彈窗以外區域可以關閉彈窗
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
 }
 
 function initializeWeather() {
@@ -267,15 +435,4 @@ function updateCountdown() {
     const diff = new Date('2026-03-21T00:00:00') - new Date();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     el.textContent = diff > 0 ? `距離出發還有 ${days} 天` : '旅程進行中！';
-}
-
-// 補上遺漏的 renderExpenseList
-function renderExpenseList() {
-    const container = document.getElementById('expenseList');
-    if (!container) return;
-    const items = JSON.parse(localStorage.getItem('expenseItems')) || [];
-    container.innerHTML = items.map(item => `
-        <div class="list-item" style="padding:10px; border-bottom:1px solid #eee;">
-            <b>${item.category}</b> - ${item.amount} ${item.currency} (${item.payer})
-        </div>`).join('');
 }
