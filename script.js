@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ------------------------------------
     // 1. 全域變數與初始化 (確保順序正確)
     // ------------------------------------
+let myChart = null; // 確保全域只有一個 Chart 實例
+
     const departureDate = new Date('2026-03-21T00:00:00'); 
     let currentExchangeRate = 750; // 預設值
     const TRAVELERS = ['A', 'B']; 
@@ -89,8 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetId === 'budgetPage') {
             renderExchangeList();
             renderExpenseList();
-            renderPieChart();
-        }
+// 使用 setTimeout 確保 DOM 已經顯示出來，Chart.js 才能抓到寬度
+        setTimeout(() => {
+            updateChart();
+        }, 50);        }
         if (targetId === 'packingPage') {
             renderPackingList();
         }
@@ -206,6 +210,7 @@ function refreshAll() {
     calculateTotal();     // 2. 重新計算總額與餘額
     renderExchangeList(); // 3. 刷新換匯紀錄 (之前漏掉這個函式內容)
     renderExpenseList();  // 4. 刷新支出明細
+    updateChart();        // 新增這行：確保數字變動時圖表跟著變
 }
 
 // [修正] 補上漏掉的換匯紀錄渲染函式
@@ -389,13 +394,13 @@ if (exchangeForm) {
 }
 
     // ------------------------------------
-    // 8. 啟動
-    // ------------------------------------
-    refreshAll(); // 取代原本散亂的 render 呼叫
-    renderPackingList();
-    initializeWeather();
-    setInterval(updateCountdown, 1000);
-    switchPage('homePage');
+// --- 8. 啟動 (請改為這個順序) ---
+switchPage('homePage'); // 先定位頁面
+refreshAll();          // 再刷新數據與圖表
+renderPackingList();
+initializeWeather();
+setInterval(updateCountdown, 1000);
+
 
 // --- 備忘錄邏輯 ---
 const memoEl = document.getElementById('travelMemo');
@@ -414,6 +419,66 @@ if (memoEl) {
             localStorage.setItem('travelMemo', memoEl.value);
             memoStatus.innerText = '已自動儲存';
         }, 1000); // 停止打字 1 秒後才存檔
+    });
+}
+
+function updateChart() {
+    const ctx = document.getElementById('categoryChart');
+    if (!ctx) return;
+
+    // 1. 整理分類數據 (統一轉換為 VND 計算比例才精準)
+    const categoryTotals = {};
+    expenseItems.forEach(item => {
+        // 統一轉為 VND 進行統計
+        const valueVND = item.currency === 'TWD' ? item.amount * currentExchangeRate : item.amount;
+        categoryTotals[item.category] = (categoryTotals[item.category] || 0) + valueVND;
+    });
+
+    const labels = Object.keys(categoryTotals);
+    const data = Object.values(categoryTotals);
+
+    // 2. 判斷是否有數據
+    if (data.length === 0) {
+        ctx.style.display = 'none';
+        // ... (顯示「尚無資料」的代碼維持不變) ...
+        return;
+    } else {
+        ctx.style.display = 'block';
+        if (document.getElementById('no-data-msg')) document.getElementById('no-data-msg').remove();
+    }
+
+    // 3. 銷毀舊圖表防止重疊
+    if (myChart) { myChart.destroy(); }
+
+    // 4. 繪製新圖表
+    myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: ['#8E9775', '#E28E8E', '#94B49F', '#D4BE96', '#A78BFA'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: { boxWidth: 12, font: { size: 12 } }
+                },
+                // 加個小功能：滑鼠移上去顯示金額
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return ` ${context.label}: ${Math.round(context.raw).toLocaleString()} VND`;
+                        }
+                    }
+                }
+            }
+        }
     });
 }
 
@@ -464,3 +529,4 @@ function updateCountdown() {
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     el.textContent = diff > 0 ? `距離出發還有 ${days} 天` : '旅程進行中！';
 }
+
