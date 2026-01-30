@@ -235,15 +235,13 @@ function renderExchangeList() {
         return;
     }
 
-    tbody.innerHTML = records.map((rec, index) => {
-        // 1. 日期格式化：3/21
+tbody.innerHTML = records.map((rec, index) => {
         let dateShow = '';
         if (rec.date) {
             const dateParts = rec.date.split('-');
             dateShow = dateParts.length === 3 ? `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}` : rec.date;
         }
 
-        // 2. 計算該筆紀錄的匯率 (VND / TWD)
         const rate = (rec.vndAmount / rec.rmbAmount).toFixed(0);
 
         return `
@@ -255,9 +253,12 @@ function renderExchangeList() {
                         <span class="exchange-arrow">➔</span>
                         ${rec.vndAmount.toLocaleString()} VND
                     </div>
-                    <span class="remain-label" style="color: var(--primary-color);">
+                    <div class="remain-label" style="color: var(--primary-color);">
                         匯率：1 RMB ≈ ${parseInt(rate).toLocaleString()} VND
-                    </span>
+                    </div>
+                    <div class="remain-label" style="color: var(--subtle-text-color); font-style: italic;">
+                        地點：${rec.location || '未註記'}
+                    </div>
                 </td>
                 <td class="ex-action">
                     <button class="delete-btn" onclick="deleteExchange(${index})">×</button>
@@ -362,27 +363,27 @@ const exchangeForm = document.getElementById('addExchangeForm');
 if (exchangeForm) {
     exchangeForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        // 取得彈窗內的輸入值
+        
         const date = document.getElementById('exchangeDateModal').value;
+        // 新增：取得地點 (若沒填則預設為 '未註記')
+        const location = document.getElementById('exchangeLocation')?.value || '未註記'; 
         const twd = parseFloat(document.getElementById('rmbAmount').value);
         const vnd = parseFloat(document.getElementById('vndAmount').value);
 
         if (!twd || !vnd) { alert("請輸入金額"); return; }
 
-        // 推入正確的全域變數 exchangeHistory
+        // 存入全域變數 (包含地點)
         exchangeHistory.push({ 
             date: date, 
+            location: location, // 儲存地點資訊
             rmbAmount: twd, 
             vndAmount: vnd 
         });
         
-        // 儲存至 LocalStorage
         localStorage.setItem('exchangeHistory', JSON.stringify(exchangeHistory));
         
         toggleModal('exchangeModal', false);
         exchangeForm.reset();
-        
-        // 立即刷新所有介面 (包含換匯明細)
         refreshAll(); 
     });
 }
@@ -395,6 +396,27 @@ if (exchangeForm) {
     initializeWeather();
     setInterval(updateCountdown, 1000);
     switchPage('homePage');
+
+// --- 備忘錄邏輯 ---
+const memoEl = document.getElementById('travelMemo');
+const memoStatus = document.getElementById('memoStatus');
+
+// 1. 載入已存的內容
+if (memoEl) {
+    memoEl.value = localStorage.getItem('travelMemo') || '';
+    
+    // 2. 監聽輸入行為 (使用輸入間隔存檔，避免頻繁寫入)
+    let saveTimeout;
+    memoEl.addEventListener('input', () => {
+        memoStatus.innerText = '儲存中...';
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            localStorage.setItem('travelMemo', memoEl.value);
+            memoStatus.innerText = '已自動儲存';
+        }, 1000); // 停止打字 1 秒後才存檔
+    });
+}
+
 });
 
 // 工具函式
@@ -405,12 +427,18 @@ function toggleModal(id, show) {
     
     modal.style.display = show ? 'block' : 'none';
 
-    // 5. 如果是打開新增支出彈窗，預設日期為當天
-    if (show && id === 'expenseModal') {
-        const dateInput = document.getElementById('expenseDate');
-        if (dateInput && !dateInput.value) {
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.value = today;
+    // 當彈窗開啟時，自動設定日期預設值
+    if (show) {
+        // 判斷是哪種彈窗，並對應其日期 input 的 ID
+        const targetDateId = id === 'expenseModal' ? 'expenseDate' : 
+                           id === 'exchangeModal' ? 'exchangeDateModal' : null;
+        
+        if (targetDateId) {
+            const dateInput = document.getElementById(targetDateId);
+            // 只有在 input 為空時才填入，避免覆蓋掉使用者已選的日期
+            if (dateInput && !dateInput.value) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
         }
     }
 }
