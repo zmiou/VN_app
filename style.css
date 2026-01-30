@@ -194,6 +194,8 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
     -webkit-font-smoothing: antialiased; /* 讓字體在手機上更細膩 */
+/* 墊高的距離 = 導覽列高度 + iPhone 安全區域高度 + 額外留白 */
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 20px));
 }
 
 /* 針對金額數字特別強化，讓它看起來更專業 */
@@ -213,6 +215,7 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
+padding-bottom: 100px;
 }
 
 /* --- 頂部標題與倒數計時 (固定 Header) --- */
@@ -1145,6 +1148,11 @@ select {
     padding: 40px 25px 25px 25px !important;
     max-height: 80vh !important;
     overflow-y: auto !important;
+
+/* 避免彈窗內容在手機上被導覽列或橫槓遮住 */
+    margin-bottom: env(safe-area-inset-bottom, 20px);
+    max-height: 85vh; /* 限制高度，避免在小手機上塞不下 */
+    overflow-y: auto; /* 超過高度時可以滾動 */
 }
 
 #expenseModal .modal-content::-webkit-scrollbar {
