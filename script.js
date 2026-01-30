@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ------------------------------------
     // 1. 全域變數與初始化 (確保順序正確)
     // ------------------------------------
-let myChart = null; // 確保全域只有一個 Chart 實例
-
     const departureDate = new Date('2026-03-21T00:00:00'); 
     let currentExchangeRate = 750; // 預設值
     const TRAVELERS = ['A', 'B']; 

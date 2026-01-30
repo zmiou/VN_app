@@ -1324,3 +1324,16 @@ select {
     outline: none;
     border-color: var(--primary-color);
 }
+
+/* 強化輸入框的 Placeholder 樣式 */
+#packingInput::placeholder {
+    color: #888;          /* 加深顏色 */
+    font-size: 0.95rem;   /* 稍微放大字體 */
+    opacity: 1;           /* 確保顏色不被瀏覽器淡化 */
+}
+
+/* 強化輸入框本身的字體 */
+#packingInput {
+    font-size: 1rem;
+    padding: 12px;
+}
