@@ -560,12 +560,12 @@
         <div class="dashboard-grid">
             <div class="summary-item total-twd">
                 <i class="fas fa-hand-holding-usd"></i>
-                <div class="label">總花費 (TWD 參考)</div>
+                <div class="label">總花費(新台幣參考)</div>
                 <span id="totalTWD">0.00</span>
             </div>
             <div class="summary-item public-fund-balance">
                 <i class="fas fa-coins"></i>
-                <div class="label">公費餘額 (₫)</div>
+                <div class="label">公費餘額 (越南盾)</div>
                 <span id="publicFundBalance">0</span>
             </div>
         </div>
@@ -694,29 +694,30 @@
     </div>
 
 </div>
-            <div id="packingPage" class="page">
-                <h1>📦 行李清單</h1>
+<div id="packingPage" class="page">
+    <h1>📦 行李清單</h1>
 
-                <div class="card packing-form-card">
-                    <h2>新增打包項目</h2>
-                    <form id="addItemForm">
-                        <input type="text" id="packingItemInput" placeholder="例如：耳塞、轉換插頭" required>
-                        <button type="submit" id="addItemBtn">加入</button>
-                    </form>
-                </div>
+    <div class="card packing-form-card">
+        <h2>新增打包項目</h2>
+        <form id="addItemForm" class="packing-input-group">
+            <input type="text" id="packingItemInput" placeholder="例如：耳塞、轉換插頭" required>
+            <button type="submit" id="addItemBtn">加入</button>
+        </form>
+    </div>
 
-                <div class="card packing-list-card">
-                    <h2>待打包 (未勾選)</h2>
-                    <ul class="packing-list" id="pendingList">
-                        </ul>
-                    
-                    <h2>已打包 (已勾選)</h2>
-                    <ul class="packing-list" id="checkedList">
-                        </ul>
-                    <p id="packingEmptyMessage" style="text-align: center; color: var(--subtle-text-color); display: none;">清單為空</p>
-                </div>
-            </div>
+    <div class="card packing-list-card">
+        <h2 style="color: var(--danger-color); border-bottom: 2px solid #f8d7da; padding-bottom: 8px;">⏳ 待打包</h2>
+        <ul class="packing-list" id="pendingList">
+            </ul>
+    </div>
 
+    <div class="card packing-list-card" style="background-color: #fafafa;">
+        <h2 style="color: var(--secondary-color); border-bottom: 2px solid #d1e7dd; padding-bottom: 8px;"> 已完成</h2>
+        <ul class="packing-list" id="checkedList">
+            </ul>
+        <p id="packingEmptyMessage" style="text-align: center; color: var(--subtle-text-color); display: none; margin-top: 10px;">清單為空</p>
+    </div>
+</div>
         </div>
 
         <div id="navbar">

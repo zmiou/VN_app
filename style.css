@@ -942,6 +942,32 @@ select {
     background-color: #004d40; /* 使用更深的 primary-color 變化 */
 }
 
+/* 讓行李清單的輸入框與按鈕字體變大 */
+.input-group input, 
+.input-group button {
+    font-size: 1rem; /* 16px，與其他頁面內文一致 */
+    padding: 10px 12px; /* 增加點擊區域，比較好按 */
+}
+
+/* 讓「例如：耳塞...」的預留文字更清晰 */
+::placeholder {
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+/* 行李清單列表項目的文字大小 */
+.item-name span {
+    font-size: 1.1rem; /* 稍微大一點點，方便勾選時閱讀 */
+    margin-left: 8px;
+}
+
+/* 確保複選框 (Checkbox) 不要縮得太小 */
+.item-name input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
 /* 記帳看板樣式 */
 .budget-summary {
     display: flex;
