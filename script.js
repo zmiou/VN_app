@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let packingItems = JSON.parse(localStorage.getItem('packingListItems')) || [];
     let exchangeHistory = JSON.parse(localStorage.getItem('exchangeHistory')) || [];
 
+let myChart = null; // 放在 DOMContentLoaded 外層或函式上層
+
     // ------------------------------------
     // 2. 核心計算：加權平均匯率與總額
     // ------------------------------------
@@ -528,3 +530,23 @@ function updateCountdown() {
     el.textContent = diff > 0 ? `距離出發還有 ${days} 天` : '旅程進行中！';
 }
 
+    // 渲染清單前，檢查是否第一次開啟
+    if (!localStorage.getItem('packingListItems') || packingItems.length === 0) {
+        const defaultItems = [
+            { name: '護照', checked: false },
+            { name: '簽證', checked: false },
+            { name: '手機充電器', checked: false },
+            { name: '牙刷牙膏', checked: false },
+            { name: '換洗衣物', checked: false },
+            { name: '泳衣', checked: false },
+            { name: '拖鞋', checked: false },
+            { name: '防曬', checked: false },
+            { name: '雨傘', checked: false },
+            { name: '備用藥物', checked: false },
+        ];
+        packingItems = defaultItems;
+        localStorage.setItem('packingListItems', JSON.stringify(packingItems)); // 只在第一次存
+    }
+
+    // 再渲染清單
+    renderPackingList();
