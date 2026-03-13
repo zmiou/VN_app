@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>越南旅遊小幫手</title>
+    <title>2026峴港會安旅遊</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -14,8 +14,7 @@
 <body>
     <div id="app">
         <header>
-            <div class="trip-title">越南峴港/會安之旅</div>
-            <div class="countdown-text" id="countdownText"></div>
+            <div class="trip-title">3/21-3/25 會安|峴港</div>
         </header>
 
         <div id="content">
@@ -24,65 +23,140 @@
                 <h1>🏠 旅程概覽</h1>
                 
 <div class="card currency-converter">
-    <h2>💰 即時匯率換算</h2>
+    <h2 class="card-header-flex">
+        <span>💰 即時匯率換算</span>
+    </h2>
+
     <div class="converter-box">
-        <div class="input-group">
-            <input type="number" id="twdInput" placeholder="台幣 TWD" step="any">
-            <span>TWD</span>
+        <div class="currency-item">
+            <input type="text" id="vndInput" inputmode="decimal" placeholder="輸入越盾金額">
+            <span class="currency-label">越南盾 VND</span>
         </div>
-        <div class="swap-icon"><i class="fas fa-exchange-alt"></i></div>
-        <div class="input-group">
-            <input type="number" id="vndInput" placeholder="越盾 VND" step="any">
-            <span>VND</span>
+
+        <div class="exchange-arrow">⇄</div>
+
+        <div class="currency-item">
+            <input type="text" id="twdInput" inputmode="decimal" placeholder="輸入台幣金額">
+            <span class="currency-label">新台幣 TWD</span>
         </div>
     </div>
-    <div id="converterRateText" style="font-size: 0.7rem; color: var(--subtle-text-color); margin-top: 10px; text-align: center;">
-        使用平均匯率：計算中...
-    </div>
-</div>
-      <div class="memo-section card">
-    <h3><i class="fas fa-sticky-note"></i> 旅遊備忘錄</h3>
-    <textarea id="travelMemo" placeholder="在此輸入重要的注意事項、飯店地址或登機資訊..."></textarea>
-    <div id="memoStatus" class="remain-label">已自動儲存</div>
 </div>
 
           <div class="card flight-widget">
-    <h2>✈️ 航班資訊</h2>
-    <div class="flight-grid">
-        <div class="flight-info" id="departureFlight">
-            <h3>去程 高雄小港國際機場KHH</h3>
-    <p>航班號：IT585</p>
-    <p>出發時間：2026-03-21 17:35</p>
-    <p>抵達時間：2026-03-21 19:10</p>
-    <p><a href="https://www.google.com/search?q=IT585 flight status" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">
-  🛫點擊查看 IT585 即時航班狀態
-</a></p>
+<h2 class="card-header-flex">
+    <span>✈️ 航班資訊</span>
+    <span class="pnr-tag">訂位代號S4CWKV</span>
+</h2>
+<div class="flight-section">
+    <div class="flight-card">
+        <div class="flight-header">
+            <span class="airport-code">KHH</span>
+            <span class="flight-number-tag">IT 585</span>
+            <span class="airport-code">DAD</span>
         </div>
-        <div class="flight-info" id="arrivalFlight">
-            <h3>回程 越南峴港國際機場DAD</h3>
-    <p>航班號：IT586</p>
-    <p>出發時間：2026-03-25 18:25</p>
-    <p>抵達時間：2026-03-21 21:40</p>
-    <p><a href="https://www.google.com/search?q=IT586 flight status" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">
-  🛫點擊查看 IT586 即時航班狀態
-</a></p>
+        <div class="flight-detail-row">
+            <div class="time-box">
+                <span class="time-label">3/21 (六)</span>
+                <span class="time-value">17:35</span>
+            </div>
+            <div class="plane-icon">✈</div>
+            <div class="time-box" style="text-align: right;">
+                <span class="time-label">3/21 (六)</span>
+                <span class="time-value">19:10</span>
+            </div>
+        </div>
+        <a href="https://www.google.com/search?q=IT585+flight+status" target="_blank" class="status-link">
+    🔍 查看 IT585 即時狀態
+</a>
+    </div>
+
+    <div class="flight-card">
+        <div class="flight-header">
+            <span class="airport-code">DAD</span>
+            <span class="flight-number-tag">IT 586</span>
+            <span class="airport-code">KHH</span>
+        </div>
+        <div class="flight-detail-row">
+            <div class="time-box">
+                <span class="time-label">3/25 (三)</span>
+                <span class="time-value">18:25</span>
+            </div>
+            <div class="plane-icon">✈</div>
+            <div class="time-box" style="text-align: right;">
+                <span class="time-label">3/25 (三)</span>
+                <span class="time-value">21:40</span>
+            </div>
+        </div>
+        <a href="https://www.google.com/search?q=IT586+flight+status" target="_blank" class="status-link">
+    🔍 查看 IT586 即時狀態
+</a>
+    </div>
+</div>
+</div>
+
+                <div class="card hotel-info">
+    <h2>🏨 住宿旅館</h2>
+    <div class="hotel-container">
+        <div class="hotel-item">
+            <div class="hotel-date-tag">3/21 - 3/23 會安</div>
+            <h3 class="hotel-title">La Charm Hoi An</h3>
+            <p class="hotel-addr-vn">64 Đào Duy Từ, Hội An</p>
+            <div class="hotel-meta">
+                <span>📞 +84 918 158 393</span>
+                <span>🔑 14:00入住 / 12:00退房</span>
+                <span>🍳 含早餐</span>
+                <span>💲 VND 7,168,000 (現場付款)</span>
+                <span>📄 Booking 5927.242.543 / PIN碼8218</span>
+            </div>
+            <a href="https://www.google.com/maps/search/?api=1&query=La+Charm+Hoi+An+Hotel" target="_blank" class="status-link-small">🗺️ 地圖</a>
+        </div>
+
+        <div class="hotel-item">
+            <div class="hotel-date-tag">3/23 - 3/25 峴港</div>
+            <h3 class="hotel-title">Sanouva Danang Hotel</h3>
+            <p class="hotel-addr-vn">68 Phan Châu Trinh, Đà Nẵng</p>
+            <div class="hotel-meta">
+                <span>📞 +84 919 201 468</span>
+                <span>🔑 14:00入住 / 12:00退房</span>
+                <span>🍳 含早餐、下午茶</span>
+                <span>💲 VND 6,311,520 (未付)</span>
+                <span>📄 Booking 6658.292.643 / PIN碼9472</span>
+            </div>
+            <a href="https://www.google.com/maps/search/?api=1&query=Sanouva+Danang+Hotel" target="_blank" class="status-link-small">🗺️ 地圖</a>
         </div>
     </div>
 </div>
 
-                <div class="card visa-card">
-                    <h2>🛂 簽證資訊</h2>
-                    <p>台灣護照進入越南需辦理簽證 (觀光簽證，可辦電子簽)。</p>
-                    <div class="data-source">
-                        提醒：請務必再次向官方確認最新規定。
-                    </div>
-                </div>
+<div class="card extra-info-container">
+    <div class="small-card">
+        <h2 class="card-header-flex mini">
+            <span>💡 旅遊提醒</span>
+        </h2>
+        <ul class="memo-list">
+            <li>1. 務必列印紙本簽證</li>
+            <li>2. 建議飲用瓶裝水，帶腸胃藥</li>
+            <li>3. 過馬路小心，跟著當地人，或舉手示意</li>
+            <li>4. 小費：有桌邊服務的餐廳(5-10%)、按摩、搬行李、住宿</li>
+            <li>5. 進入寺廟不能穿無袖上衣和短褲</li>
+            <li>6. 嚴防扒手，隨身包背前面，現金信用卡分開放，注意手機</li>
+        </ul>
+    </div>
 
-                <div class="card emergency-card">
-                    <h2>🚨 緊急聯絡</h2>
-                    <p>台灣駐越南代表處電話：<strong>+84-903-927-019</strong></p>
-                    <p>當地緊急電話：113 (警察), 115 (救護車)</p>
-                </div>
+    <div class="small-card">
+        <h2 class="card-header-flex mini">
+            <span>🚨 緊急聯絡</span>
+        </h2>
+        <div class="emergency-content">
+            <p><strong>國泰產險：</strong>+886-2-2755-1258</p>
+            <p><strong>旅外國人緊急服務專線：</strong>+886-800-085-095</p>
+            <p><strong>駐越南臺北經濟文化辦事處：</strong>09132-19986</p>
+            <p><strong>河內辦事處：</strong>+84-24-3833-5500</p>
+            <p><strong>胡志明市辦事處：</strong>+84-28-3834-6264</p>
+            <p><strong>當地報案：</strong> 113</p>
+            <p><strong>救護車：</strong> 115</p>
+        </div>
+    </div>
+</div>
             </div>
 
             <div id="itineraryPage" class="page">
@@ -634,15 +708,23 @@
                 <div class="form-group">
                     <label>付款人</label>
                     <select id="expensePayer" required>
-                        <option value="A">A</option><option value="B">B</option><option value="公費">公費</option>
+                        <option value="公費">公費</option>
+                        <option value="軍">軍</option>
+                        <option value="枝">枝</option>
+                        <option value="枝">如</option>
+                        <option value="枝">文</option>
+                        <option value="枝">蓁</option>
                     </select>
                 </div>
                 <div class="form-group">
 <div id="shareWithSection" style="display: none; margin-top: 10px;">
                     <label>分攤人 (公費)</label>
                     <div class="share-options">
-                        <label><input type="checkbox" name="shareWith" value="A" checked> A</label>
-                        <label><input type="checkbox" name="shareWith" value="B" checked> B</label>
+                        <label><input type="checkbox" name="shareWith" value="軍" checked> 軍</label>
+                        <label><input type="checkbox" name="shareWith" value="枝" checked> 枝</label>
+                        <label><input type="checkbox" name="shareWith" value="如" checked> 如</label>
+                        <label><input type="checkbox" name="shareWith" value="文" checked> 文</label>
+                        <label><input type="checkbox" name="shareWith" value="蓁" checked> 蓁</label>
                     </div></div>
                 </div>
                 <div class="form-group">
@@ -695,15 +777,21 @@
                 <label>兌換地點</label>
                 <input type="text" id="exchangeLocation" placeholder="例如：機場、銀樓、飯店">
             </div>
-                <div class="form-group">
-                    <label>人民幣金額 (RMB)</label>
-                    <input type="number" id="rmbAmount" placeholder="RMB" required>
-                </div>
-                <div class="form-group">
-                    <label>越南盾金額 (VND)</label>
-                    <input type="number" id="vndAmount" placeholder="VND" required>
-                </div>
-                <button type="submit" class="submit-btn">儲存換匯</button>
+<div class="form-group">
+    <label>兌換金額</label>
+    <div class="currency-input" style="display: flex; gap: 5px;">
+        <input type="number" id="exchangeAmount" placeholder="金額" required style="flex: 2;">
+        <select id="exchangeCurrency" style="flex: 1;">
+            <option value="TWD">新台幣</option>
+            <option value="RMB">人民幣</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label>越南盾金額</label>
+    <input type="number" id="vndAmount" placeholder="VND" required>
+</div>                <button type="submit" class="submit-btn">儲存換匯</button>
             </form>
         </div>
     </div>

@@ -339,105 +339,326 @@ h2 {
 }
 
 /* --- 首頁資訊卡片 (略，無改動) --- */
-.flight-info-card strong, .hotel-info-card strong, .emergency-card strong {
-    color: var(--secondary-color); /* 藍綠色 */
-    font-weight: 700;
+/* 航班資訊卡片優化 */
+.flight-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
 }
 
-.flight-info-card p, .hotel-info-card p, .emergency-card p {
-    margin-bottom: 8px;
-    font-size: 1em;
-}
-
-/* 簽證卡片樣式 */
-.visa-card .visa-thumbnail-container {
-    text-align: center;
-    padding: 10px 0;
-}
-
-.visa-card .visa-thumbnail {
-    max-width: 90%;
-    height: auto;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.visa-card .data-source {
-    margin-top: 10px;
-    font-size: 0.8em;
-    color: var(--subtle-text-color);
-}
-
-/* --- 匯率換算器樣式 (略，無改動) --- */
-.converter-box {
+.flight-header {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
     align-items: center;
+    border-bottom: 1px dashed #ddd; /* 虛線有票券感 */
+    padding-bottom: 8px;
+    margin-bottom: 10px;
 }
 
-.currency-converter input[type="number"] {
-    width: 90%;
-    padding: 10px 15px;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1.2em;
-    text-align: center;
+.airport-code {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary-color);
 }
 
-.exchange-rate {
-    font-size: 0.9em;
-    color: var(--subtle-text-color);
+.flight-number-tag {
+    background: var(--secondary-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.flight-detail-row {
+    display: flex;
+    justify-content: space-between;
     margin: 5px 0;
 }
 
-.conversion-result {
-    font-size: 1.5em;
+.time-box {
+    text-align: left;
+}
+
+.time-label {
+    font-size: 0.75rem;
+    color: #888;
+    display: block;
+}
+
+.time-value {
+    font-size: 1.1rem;
     font-weight: bold;
-    color: var(--accent-color); /* 琥珀黃 */
-    margin-top: 10px;
+    color: #333;
 }
 
-
-/* --- 天氣資訊樣式 (略，無改動) --- */
-.weather-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    text-align: center;
+.flight-section {
+    padding: 5px;
 }
 
-.city-weather {
-    background-color: var(--background-color);
-    padding: 15px 10px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-}
-
-.city-weather h3 {
-    margin-top: 0;
+.plane-icon {
+    font-size: 20px;
     color: var(--primary-color);
-    font-size: 1.1em;
+    opacity: 0.5;
+    margin: 0 10px;
 }
 
-.city-weather .temp {
-    font-size: 2em;
+.status-link {
+    display: block;
+    text-align: center; /* 這裡改回置中 */
+    margin-top: 12px;
+    padding: 10px 15px;
+    background: #ffffff; /* 純白背景 */
+    border: 1.5px solid #e0e0e0; /* 灰邊框 */
+    border-radius: 20px; /* 圓角膠囊狀 */
+    text-decoration: none;
+    font-size: 0.85rem;
+    color: #1a73e8; /* Google 藍 */
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* 淡淡的陰影 */
+}
+
+.status-link:active {
+    background: #e9ecef; /* 手機點擊時會有一點深色回饋 */
+}
+
+/* 讓 h2 標題具備左右對開的功能 */
+h2.card-header-flex {
+    display: flex;
+    justify-content: space-between; /* 左右分開 */
+    align-items: center;           /* 垂直置中 */
+    
+    /* 以下屬性是用來確保與你原本其他卡片的 h2 一致，如果不夠大可以再調 */
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+/* 訂位代號樣式：模仿日期卡片的質感 */
+.pnr-tag {
+    /* 使用與日期相似的背景與文字比例 */
+    background-color: #f0e6e0;
+    color: #000000;            
+    padding: 3px 12px;
+    border-radius: 6px;
+    font-size: 1rem;         /* 代號通常比標題小一點點才精緻 */
     font-weight: bold;
-    color: var(--secondary-color); /* 藍綠色 */
+    letter-spacing: 1px;
 }
 
-.city-weather .condition {
-    font-size: 0.9em;
-    color: var(--subtle-text-color);
+/* 飯店外層容器 */
+.hotel-container {
+    display: flex;
+    gap: 12px; /* 兩間飯店中間的間距 */
+    justify-content: space-between;
 }
 
-.weather-widget .data-source {
-    margin-top: 15px;
-    font-size: 0.8em;
-    color: var(--subtle-text-color);
+/* 個別飯店區塊 */
+.hotel-item {
+    flex: 1; /* 讓兩邊等寬 */
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 日期小標籤 */
+.hotel-date-tag {
+    background: #f0e6e0; /* 跟你機票日期一樣的顏色 */
+    color: #8d6e63;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    align-self: flex-start;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.hotel-title {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: #333;
+    min-height: 2.4em; /* 確保標題高度一致，防止長度不同導致對不齊 */
+}
+
+.hotel-addr-vn {
+    font-size: 0.85rem;
+    color: #444;
+    margin: 2px 0;
+    font-weight: 500;
+}
+
+.hotel-addr-en {
+    font-size: 0.75rem;
+    color: #999;
+    margin-bottom: 8px;
+}
+
+/* 電話與時間小字 */
+.hotel-meta {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: auto; /* 推到底部對齊 */
+    line-height: 1.6;
+}
+
+.hotel-meta span {
+    display: block;
+}
+
+/* 小型地圖按鈕 */
+.status-link-small {
+    display: block;
     text-align: center;
+    margin-top: 10px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    text-decoration: none;
+    font-size: 0.75rem;
+    color: #1a73e8;
+}
+
+@media (max-width: 480px) {
+    .hotel-container {
+        flex-direction: column; /* 改為上下排列 */
+        gap: 20px; /* 增加間距 */
+    }
+    .hotel-item {
+        width: 100%; /* 撐滿寬度 */
+    }
+}
+
+/* --- 匯率換算器樣式 --- */
+/* 讓輸入框下方的文字 TWD/VND 置中 */
+.currency-label {
+    display: block;
+    text-align: center; /* 這裡改置中 */
+    width: 100%;
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* 修改原本的 .converter-box */
+.converter-box {
+   display: flex;
+   flex-direction: column; /* 預設：手機上垂直排列 */
+   gap: 12px;
+   align-items: center;
+   width: 100%;
+}
+/* 響應式：當螢幕寬度足夠時 (如橫放的手機)，轉為水平排列 */
+@media (min-width: 480px) {
+   .converter-box {
+       flex-direction: row; /* 轉為水平 */
+       justify-content: center;
+   }
+   .currency-converter input {
+       width: 140px; /* 水平時固定寬度才不會太長 */
+   }
+}
+/* 讓輸入框變好看，並支援 text 類型 */
+.currency-converter input {
+   width: 90%;
+   padding: 12px 15px;
+   border: 2px solid var(--border-color);
+   border-radius: 12px;
+   font-size: 1.3rem;
+   text-align: right; /* 金額靠右對齊，符合銀行 App 習慣 */
+   background-color: #fff;
+   /* 移除 type="number" 的小箭頭 */
+   -webkit-appearance: none;
+}
+/* 換算符號 (原本可能只是文字，現在給它一點動態感) */
+.exchange-arrow {
+    background: #f8f9fa;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* 圓形的 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: var(--secondary-color);
+    /* 讓它在手機垂直排列時不會太貼輸入框 */
+    margin: 4px 0; 
+}
+
+/* 外層容器 */
+.extra-info-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    align-items: stretch; /* 關鍵：強制左右卡片高度一致 */
+}
+
+/* 小卡片基礎樣式 */
+.small-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 15px;
+    padding: 18px; /* 稍微增加內距，更有呼吸感 */
+    display: flex;
+    flex-direction: column; /* 讓內部內容可以垂直分佈 */
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* 針對小卡片的標題微調 */
+.card-header-flex.mini {
+    font-size: 1.1rem; /* 比主卡片標題小一點點 */
+    margin-bottom: 10px;
+}
+
+/* 旅遊提醒清單 */
+.memo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.memo-list li {
+    font-size: 0.85rem;
+    color: #444;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    display: flex;
+    align-items: flex-start; /* 圖示對齊文字第一行 */
+    gap: 8px;
+}
+
+.memo-list li:last-child {
+    border-bottom: none; /* 最後一項不用虛線 */
+}
+
+/* 緊急聯絡內容 */
+.emergency-content p {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.emergency-content strong {
+    display: block; /* 標題獨立一行，避免電話太長擠在一起 */
+    color: #333;
+    margin-bottom: 2px;
+}
+
+/* 手機版響應式：改為垂直堆疊 */
+@media (max-width: 480px) {
+    .extra-info-container {
+        flex-direction: column;
+        align-items: center; /* 手機版改為置中排列 */
+    }
+    
+    .small-card {
+        width: 100%; /* 手機版撐滿寬度 */
+    }
 }
 
 /* --- 行程頁面樣式 (略，無改動) --- */
@@ -494,21 +715,18 @@ h2 {
 /* 圖片容器 */
 .card-img-container {
     width: 35%;
+    aspect-ratio: 4 / 3;   /* 固定比例 */
     flex-shrink: 0;
     overflow: hidden;
-    background-color: var(--light-blue); /* 淺天空藍作為底色 */
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: center;
-    padding: 5px; 
 }
 
 .card-img {
     width: 100%;
-    height: auto; 
-    object-fit: cover;
-    display: block;
-    border-radius: 4px;
+    height: auto;
+    object-fit: contain;
 }
 
 /* 文字內容區 */

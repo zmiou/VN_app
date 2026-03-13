@@ -14,6 +14,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let myChart = null; // 放在 DOMContentLoaded 外層或函式上層
 
+// 1. 修正後的數字轉字串：鎖死整數，絕不補小數點
+function toComma(num) {
+   if (num === 0) return "0";
+   if (!num || isNaN(num)) return "";
+   // 使用參數強迫不顯示小數點
+   return Math.round(num).toLocaleString('en-US', {
+       minimumFractionDigits: 0,
+       maximumFractionDigits: 0
+   });
+}
+// 2. 修正後的字串轉數字：更嚴格的過濾
+function fromComma(str) {
+   if (!str) return 0;
+   // 移除逗號，並且只取整數部分，防止小數點干擾
+   const cleanStr = str.toString().replace(/,/g, '');
+   return Math.floor(parseFloat(cleanStr)) || 0;
+}
+
     // ------------------------------------
     // 2. 核心計算：加權平均匯率與總額
     // ------------------------------------
@@ -22,12 +40,21 @@ let myChart = null; // 放在 DOMContentLoaded 外層或函式上層
             currentExchangeRate = 750;
             return;
         }
-        let totalTWD = 0;
-        let totalVND = 0;
-        exchangeHistory.forEach(record => {
-            totalTWD += parseFloat(record.rmbAmount || 0); 
-            totalVND += parseFloat(record.vndAmount || 0);
-        });
+let totalTWD = 0;
+let totalVND = 0;
+
+exchangeHistory.forEach(record => {
+
+    let base = parseFloat(record.amount || 0);
+
+    // 如果來源是 RMB 要先換成 TWD 才能平均
+    if (record.currency === 'RMB') {
+        base = base * 4.4; // 約略匯率 (可自己調整)
+    }
+
+    totalTWD += base;
+    totalVND += parseFloat(record.vndAmount || 0);
+});
         if (totalTWD > 0) currentExchangeRate = totalVND / totalTWD;
     }
 
@@ -43,12 +70,12 @@ let myChart = null; // 放在 DOMContentLoaded 外層或函式上層
 
         // 計算支出
         expenseItems.forEach(item => {
-            const v = item.currency === 'TWD' ? item.amount * currentExchangeRate : item.amount;
+            const amount = parseFloat(item.amount || 0);
+const v = item.currency === 'TWD' ? amount * currentExchangeRate : amount;
             totalVNDExpense += v;
-// 修改這裡：只要 payer 是 '公費' 或 'A+B' 都算進公費餘額
-    if (item.payer === '公費' || item.payer === 'A+B') {
-        publicFundExpense += v;
-    }
+if (item.payer === '公費') {
+    publicFundExpense += v;
+}
 });
         const publicFundBalance = publicFundIncome - publicFundExpense;
 
@@ -131,21 +158,53 @@ let myChart = null; // 放在 DOMContentLoaded 外層或函式上層
     });
 
     // ------------------------------------
-    // 5. 即時匯率換算器 (改為連動 currentExchangeRate)
-    // ------------------------------------
-    const twdInput = document.getElementById('twdInput');
-    const vndInput = document.getElementById('vndInput');
-
-    if (twdInput && vndInput) {
-        twdInput.addEventListener('input', () => {
-            const val = parseFloat(twdInput.value);
-            vndInput.value = !isNaN(val) ? Math.round(val * currentExchangeRate) : '';
-        });
-        vndInput.addEventListener('input', () => {
-            const val = parseFloat(vndInput.value);
-            twdInput.value = !isNaN(val) ? (val / currentExchangeRate).toFixed(2) : '';
-        });
-    }
+// --- 5. 即時匯率換算器 (穩定版：輸入不干擾，離開才格式化) ---
+const twdInput = document.getElementById('twdInput');
+const vndInput = document.getElementById('vndInput');
+function updateConversion(e, isToVND) {
+   const input = e.target;
+   // 1. 取得純數字字串 (去掉逗號)
+   let rawStr = input.value.replace(/,/g, '');
+   // 如果是空的，清空對方並結束
+   if (rawStr === '') {
+       isToVND ? vndInput.value = '' : twdInput.value = '';
+       return;
+   }
+   const rawValue = parseFloat(rawStr);
+   if (isNaN(rawValue)) return;
+   // 2. 「只更新對方」的內容並加逗號，自己的內容「保持原樣」不准動
+   // 這樣就不會觸發輸入法重複送出數字的問題
+   if (isToVND) {
+       vndInput.value = Math.round(rawValue * currentExchangeRate).toLocaleString('en-US');
+   } else {
+       twdInput.value = Math.round(rawValue / currentExchangeRate).toLocaleString('en-US');
+   }
+}
+// 3. 只有當使用者「點擊旁邊(失去焦點)」時，才幫自己的數字加上逗號美化
+function formatSelf(e) {
+   const val = parseFloat(e.target.value.replace(/,/g, ''));
+   if (!isNaN(val)) {
+       e.target.value = Math.round(val).toLocaleString('en-US');
+   }
+}
+// 4. 當使用者「點回來(獲得焦點)」時，暫時去掉逗號，方便修改
+function unformatSelf(e) {
+   const val = e.target.value.replace(/,/g, '');
+   if (val !== '') {
+       e.target.value = val;
+   }
+}
+if (twdInput && vndInput) {
+   // 輸入時：只算給對方看
+   twdInput.addEventListener('input', (e) => updateConversion(e, true));
+   vndInput.addEventListener('input', (e) => updateConversion(e, false));
+   // 點進去：去掉逗號好修改
+   twdInput.addEventListener('focus', unformatSelf);
+   vndInput.addEventListener('focus', unformatSelf);
+   // 點外面：加上逗號變漂亮
+   twdInput.addEventListener('blur', formatSelf);
+   vndInput.addEventListener('blur', formatSelf);
+}
 
     // ------------------------------------
     // 6. 行李清單功能 (完整修復版本)
@@ -166,14 +225,14 @@ let myChart = null; // 放在 DOMContentLoaded 外層或函式上層
                     <input type="checkbox" ${item.checked ? 'checked' : ''}>
                     <span class="item-text" style="${item.checked ? 'text-decoration:line-through;color:#ccc' : ''}">${item.name}</span>
                 </div>
-                <button class="remove-btn">🗑️</button>
+                <button class="delete-btn">x</button>
             `;
             
             li.querySelector('input').onchange = () => {
                 packingItems[index].checked = !packingItems[index].checked;
                 saveAndRenderPacking();
             };
-            li.querySelector('.remove-btn').onclick = () => {
+            li.querySelector('.delete-btn').onclick = () => {
                 packingItems.splice(index, 1);
                 saveAndRenderPacking();
             };
@@ -247,19 +306,19 @@ tbody.innerHTML = records.map((rec, index) => {
             dateShow = dateParts.length === 3 ? `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}` : rec.date;
         }
 
-        const rate = (rec.vndAmount / rec.rmbAmount).toFixed(0);
+        const rate = (rec.vndAmount / rec.amount).toFixed(0);
 
         return `
             <tr>
                 <td class="ex-date">${dateShow}</td>
                 <td class="ex-process">
                     <div>
-                        ${rec.rmbAmount.toLocaleString()} RMB
+                        ${rec.amount.toLocaleString()} ${rec.currency}
                         <span class="exchange-arrow">➔</span>
                         ${rec.vndAmount.toLocaleString()} VND
                     </div>
                     <div class="remain-label" style="color: var(--primary-color);">
-                        匯率：1 RMB ≈ ${parseInt(rate).toLocaleString()} VND
+                        匯率：1 ${rec.currency} ≈ ${parseInt(rate).toLocaleString()} VND
                     </div>
                     <div class="remain-label" style="color: var(--subtle-text-color); font-style: italic;">
                         地點：${rec.location || '未註記'}
@@ -304,7 +363,7 @@ function renderExpenseList() {
             dateShow = dateParts.length === 3 ? `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}` : '';
         }
 
-        const isPublic = item.payer === '公費' || item.payer === 'A+B';
+        const isPublic = item.payer === '公費';
         const publicTag = isPublic ? `<br><span class="public-expense-tag">公費</span>` : '';
         const amountColor = isPublic ? 'color: var(--primary-color);' : '';
 
@@ -372,18 +431,21 @@ if (exchangeForm) {
         const date = document.getElementById('exchangeDateModal').value;
         // 新增：取得地點 (若沒填則預設為 '未註記')
         const location = document.getElementById('exchangeLocation')?.value || '未註記'; 
-        const twd = parseFloat(document.getElementById('rmbAmount').value);
-        const vnd = parseFloat(document.getElementById('vndAmount').value);
-
-        if (!twd || !vnd) { alert("請輸入金額"); return; }
-
+const currency = document.getElementById('exchangeCurrency').value;
+const amount = parseFloat(document.getElementById('exchangeAmount').value);
+const vnd = parseFloat(document.getElementById('vndAmount').value);
+        if (!amount || !vnd) { 
+            alert("請輸入金額"); 
+            return; 
+        }
         // 存入全域變數 (包含地點)
-        exchangeHistory.push({ 
-            date: date, 
-            location: location, // 儲存地點資訊
-            rmbAmount: twd, 
-            vndAmount: vnd 
-        });
+exchangeHistory.push({
+    date: date,
+    location: location,
+    currency: currency,
+    amount: amount,
+    vndAmount: vnd
+});
         
         localStorage.setItem('exchangeHistory', JSON.stringify(exchangeHistory));
         
@@ -520,14 +582,6 @@ function initializeWeather() {
         document.getElementById('danang-temp').textContent = '28°C';
         document.getElementById('updateTime').textContent = new Date().toLocaleTimeString();
     }
-}
-
-function updateCountdown() {
-    const el = document.getElementById('countdownText');
-    if (!el) return;
-    const diff = new Date('2026-03-21T00:00:00') - new Date();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    el.textContent = diff > 0 ? `距離出發還有 ${days} 天` : '旅程進行中！';
 }
 
     // 渲染清單前，檢查是否第一次開啟
