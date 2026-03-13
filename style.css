@@ -441,7 +441,7 @@ h2.card-header-flex {
     color: #000000;            
     padding: 3px 12px;
     border-radius: 6px;
-    font-size: 1rem;         /* 代號通常比標題小一點點才精緻 */
+    font-size: 0.8rem;         /* 代號通常比標題小一點點才精緻 */
     font-weight: bold;
     letter-spacing: 1px;
 }
