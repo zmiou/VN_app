@@ -50,9 +50,9 @@
 <div class="flight-section">
     <div class="flight-card">
         <div class="flight-header">
-            <span class="airport-code">KHH</span>
+            <span class="airport-code">高雄</span>
             <span class="flight-number-tag">IT 585</span>
-            <span class="airport-code">DAD</span>
+            <span class="airport-code">峴港</span>
         </div>
         <div class="flight-detail-row">
             <div class="time-box">
@@ -72,9 +72,9 @@
 
     <div class="flight-card">
         <div class="flight-header">
-            <span class="airport-code">DAD</span>
+            <span class="airport-code">峴港</span>
             <span class="flight-number-tag">IT 586</span>
-            <span class="airport-code">KHH</span>
+            <span class="airport-code">高雄</span>
         </div>
         <div class="flight-detail-row">
             <div class="time-box">
@@ -133,12 +133,17 @@
             <span>💡 旅遊提醒</span>
         </h2>
         <ul class="memo-list">
-            <li>1. 務必列印紙本簽證</li>
-            <li>2. 建議飲用瓶裝水，帶腸胃藥</li>
-            <li>3. 過馬路小心，跟著當地人，或舉手示意</li>
-            <li>4. 小費：有桌邊服務的餐廳(5-10%)、按摩、搬行李、住宿</li>
-            <li>5. 進入寺廟不能穿無袖上衣和短褲</li>
-            <li>6. 嚴防扒手，隨身包背前面，現金信用卡分開放，注意手機</li>
+            <li>務必列印紙本簽證</li>
+            <li>建議飲用瓶裝水，漱口也盡量用瓶裝水</li>
+            <li>餐廳濕紙巾需收費，約2-5千越南盾</li>
+            <li>殺價可以先從五折開始講價，殺完價要買</li>
+            <li>過馬路小心，跟著當地人，或舉手示意</li>
+            <li>建議小費2萬盾：有桌邊服務的餐廳、搬行李、住宿(房務清潔)</li>
+            <li>小費隨心(至少1萬盾)：乘車、觀光導覽人員</li>
+            <li>帳單如包含服務費/小費，就不用給小費</li>
+            <li>如果找零金額很小(例如1千或2千盾)，可能會因為沒有零錢或習慣性地認為這是小費而不找零。</li>
+            <li>進入寺廟不能穿無袖上衣和短褲</li>
+            <li>嚴防扒手/飛車搶劫，隨身包背前面，現金、信用卡分開放，注意手機</li>
         </ul>
     </div>
 
@@ -757,7 +762,42 @@
                     <thead>
                         <tr><th>日期</th><th>說明</th><th>金額</th><th>操作</th></tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody style="background: #fdfdfd; color: #888;">
+        <tr class="fixed-item">
+            <td class="col-date">11/17</td>
+            <td class="col-desc">虎航來回機票</td>
+            <td class="col-amount">79,345 TWD</td>
+            <td class="col-action">固定</td>
+        </tr>
+        <tr class="fixed-item">
+            <td class="col-date">1/9</td>
+            <td class="col-desc">椰子船+印象秀(KKday)</td>
+            <td class="col-amount">3,517 TWD</td>
+            <td class="col-action">固定</td>
+        </tr>
+        <tr class="fixed-item">
+            <td class="col-date">1/23</td>
+            <td class="col-desc">巴拿山門票+餐廳(KKday)</td>
+            <td class="col-amount">7,488 TWD</td>
+            <td class="col-action">固定</td>
+        </tr>
+        <tr class="fixed-item">
+            <td class="col-date">3/2</td>
+            <td class="col-desc">簽證</td>
+            <td class="col-amount">4,095 TWD</td>
+            <td class="col-action">固定</td>
+        </tr>
+        <tr class="fixed-item">
+            <td class="col-date">3/12</td>
+            <td class="col-desc">國泰旅平險</td>
+            <td class="col-amount">5,255 TWD</td>
+            <td class="col-action">固定</td>
+        </tr>
+
+    </tbody>
+
+    <tbody id="dynamicExpenseBody">
+        </tbody>
                 </table>
             </div>
         </div>

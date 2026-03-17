@@ -85,8 +85,10 @@ if (item.payer === '公費') {
         const poolBalEl = document.getElementById('poolBalance');    // 首頁餘額
         const dashboardPoolEl = document.getElementById('publicFundBalance'); // 記帳頁餘額
 
-        if (totalExpEl) totalExpEl.innerText = Math.round(totalVNDExpense).toLocaleString();
-        if (totalTWDEl) totalTWDEl.innerText = (totalVNDExpense / currentExchangeRate).toFixed(0).toLocaleString();
+        // 在原本算出的 VND 總額上，加上 (99700 TWD * 當前匯率)
+if (totalExpEl) totalExpEl.innerText = Math.round(totalVNDExpense + (99700 * currentExchangeRate)).toLocaleString();
+        // 直接在算出的台幣總額加上 99700
+if (totalTWDEl) totalTWDEl.innerText = (Math.round(totalVNDExpense / currentExchangeRate) + 99700).toLocaleString();
         
         const balance = Math.round(publicFundBalance);
         if (poolBalEl) poolBalEl.innerText = balance.toLocaleString();
@@ -334,7 +336,7 @@ tbody.innerHTML = records.map((rec, index) => {
 
 // [修正] 支出明細渲染：確保讀取變數並處理標籤
 function renderExpenseList() {
-    const tbody = document.querySelector('#expenseTable tbody');
+    const tbody = document.getElementById('dynamicExpenseBody');
     const thead = document.querySelector('#expenseTable thead');
     if (!tbody) return;
 

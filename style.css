@@ -619,17 +619,32 @@ h2.card-header-flex {
 .memo-list {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 .memo-list li {
-    font-size: 0.85rem;
-    color: #444;
-    padding: 8px 0;
-    border-bottom: 1px dashed #eee;
-    display: flex;
-    align-items: flex-start; /* 圖示對齊文字第一行 */
-    gap: 8px;
+list-style: none;
+position: relative;
+    padding: 5px 1px 5px 30px; /* 留位置給左側數字 */
+    margin-bottom: 0px;
+    background: #fff;
+    counter-increment: my-counter; /* 啟動計數器 */
+    font-size: 14px; /* <--- 這裡改整列提醒的文字大小，原本可能是 16px */
+    color: #4a4a4a;
+    line-height: 1.4; /* 縮小字體後，行高也可以稍微調降 */
+    border-bottom: 1px dashed #eee;/* 加上虛線樣式 */
+}
+
+.memo-list li::before {
+content: counter(my-counter)"."; /* 顯示數字 */
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #FBBF24;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
 }
 
 .memo-list li:last-child {
